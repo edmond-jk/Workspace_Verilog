@@ -27,6 +27,10 @@ parameter TOTA_BUF_BY_4B = 4096; // 4096 x 4 Bytes --> 4 x 4 KBytes
 parameter MAX_BUFQ_DEPTH = 4;
 
 // parameters for the I/O modes of xfer_buffer
+parameter io_host_nothing = 0;
+parameter io_host_gsstatus = 1;
+parameter io_host_writing = 2;
+parameter io_host_reading = 3;
 
 // ports
 input 							reset;
@@ -67,6 +71,7 @@ reg [ADDRESS_WIDTH-1:0]		rx_address, tx_address; // tbm address
 reg [1:0]					mxferprocessing; // write data to tbm : 1, read data from tbm : 2
 // 2^16 --> 64x1024
 reg [15:0]					rx_idx, tx_idx, rx_head_idx, rx_tail_idx, tx_head_idx, tx_tail_idx;
+reg [3:0]					io_host_mode;
 
 assign hostdata_inout = hdataflow_select ? rhostdata_inout : 32'hz; //hdataflow_select is 0, host -> xfer_buffer
 
@@ -90,43 +95,73 @@ begin
 	 tx_tail_idx <= 16'h0000;
 	 
 	 mxferprocessing <= 2'b00;
+	 io_host_mode = io_host_nothing;
 	 end
 end
 
 always @ (posedge clock_host or negedge clock_host)
 begin
-	$display("XB @%d> clock:%b, host_select:%b, hwrite_enable:%b", $time, clock_host, host_select, hwrite_enable);
-	
+	if (gs_select) begin 
+		if (gs_write_enable) begin
+			gs_out_enable = 1'b1; 
+			gs_out = rx_anum;
+		end else begin
+			gs_out_enable = 1'b1;
+			gs_out = tx_anum;
+		end
+	end else begin
+		gs_out_enable = 1'b0;
+	end
+end
+		
+always @ (posedge clock_host or negedge clock_host)
+begin
 	if (host_select) begin
 		if (hwrite_enable) begin
-		
-			rx_idx = rx_head * UNIT_BUF_BY_4B + rx_head_idx;
-			rx_buffer[rx_idx] = hostdata_inout;
-			rx_head_idx = rx_head_idx + 1;
+			io_host_mode = io_host_writing;
+		end else begin
+			io_host_mode = io_host_reading;
+		end
+	end else begin
+		io_host_mode = io_host_nothing;
+	end
+			
+	$display("XB @%d> clock:%b, host_select:%b, hwrite_enable:%b", $time, clock_host, host_select, hwrite_enable);
 
-			$display("XB @%d> host_data:%h, rx_head:%d, rx_idx:%d", $time, hostdata_inout, rx_head, rx_idx);
+	case (io_host_mode)
+		io_host_writing: 
+			begin
+				rx_idx = rx_head * UNIT_BUF_BY_4B + rx_head_idx; 
+				rx_buffer[rx_idx] = hostdata_inout; 
+				rx_head_idx = rx_head_idx + 1;
 
-			if (rx_head_idx == UNIT_BUF_BY_4B) begin // 4096 Bytes / 4 Bytes --> 1024, 10 bits 
-				rx_head_idx = 16'h0000;	
+				$display("XB @%d> host_data:%d, rx_head:%d, rx_idx:%d", $time, hostdata_inout, rx_head, rx_idx);
+
+				if (rx_head_idx == UNIT_BUF_BY_4B) begin // 4096 Bytes / 4 Bytes --> 1024, 10 bits 
+					rx_head_idx = 16'h0000;	
 				
-				if (rx_mutex) begin // TODO: need to modify
-				 	wait (rx_mutex == 1'b0);
-				 	rx_mutex <= 1'b1;
-				 	rx_anum <= rx_anum - 1;
-				 	rx_mutex <= 1'b0;
-				end
-				rx_head = rx_head + 1; 
-				if (rx_head == MAX_BUFQ_DEPTH) begin 
-					rx_head <= 4'h0;
+					if (rx_mutex) begin // TODO: need to modify
+					 	wait (rx_mutex == 1'b0);
+					 	rx_mutex <= 1'b1;
+					 	rx_anum <= rx_anum - 1;
+					 	rx_mutex <= 1'b0;
+					end
+					rx_head = rx_head + 1; 
+					if (rx_head == MAX_BUFQ_DEPTH) begin 
+						rx_head <= 4'h0;
+					end
 				end
 			end
-		end else begin 
-			if (tx_anum != MAX_BUFQ_DEPTH) begin // There are something in tx_buffer.
+		io_host_reading:
+		begin
+			if (tx_anum != MAX_BUFQ_DEPTH) begin // There are something in tx_buffer. 
 				tx_idx = tx_tail * UNIT_BUF_BY_4B + tx_tail_idx;
 				rhostdata_inout = tx_buffer[tx_idx];
 				tx_tail_idx = tx_tail_idx + 1;			
+			
 				if (tx_tail_idx == UNIT_BUF_BY_4B) begin // 32 bits x 8 = 256 bits
 					tx_tail_idx <= 16'h0000;
+				
 					if(tx_mutex) begin // TODO: need to modify
 						wait (tx_mutex == 1'b0); 
 						tx_mutex <= 1'b1; 
@@ -141,24 +176,10 @@ begin
 				end
 			end
 		end
-	end
+	endcase 
 end
+		
 
 // bottom-half processing will be implemented later.	
 		
-always @ (posedge clock_host or negedge clock_host) 
-begin 
-	if (gs_select) begin
-		if (gs_write_enable) begin
-			gs_out_enable = 1'b1;
-			gs_out = rx_anum;
-		end else begin
-			gs_out_enable = 1'b1;
-			gs_out = tx_anum;
-		end
-	end else begin 
-		gs_out_enable = 1'b0;
-	end
-end
-
 endmodule

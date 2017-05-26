@@ -61,6 +61,13 @@ module xfer_buffer_tb ();
 		end
 			
 		// 3. data transfer 	
+		if (tmp_cnt == 1024) begin 
+			tmp_cnt = 0; 
+			host_select = 0; 
+			hwrite_enable = 0;
+			io_mode = io_act_nothing;
+		end 
+		
 		if (io_mode == io_act_writing) begin 
 			host_select = 1;
 			drive_w_enable = 1;	
@@ -70,12 +77,6 @@ module xfer_buffer_tb ();
 			$display("TB @%d> tmp_cnt:%d", $time, tmp_cnt);
 			
 			tmp_cnt = tmp_cnt + 1; 
-			if (tmp_cnt == 1024) begin 
-				tmp_cnt = 0; 
-				host_select = 0; 
-				hwrite_enable = 0;
-				io_mode = io_act_nothing;
-			end 
 		end
 	end
 
