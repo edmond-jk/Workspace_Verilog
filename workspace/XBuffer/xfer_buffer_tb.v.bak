@@ -1,0 +1,62 @@
+module xfer_buffer_tb ();
+	reg reset, clock_host, host_select, hwrite_enable, gs_select, gs_write_enable;
+//	reg [31:0]	bus_address;
+	wire [31:0] hostdata_inout;
+	wire [7:0] 	gs_out;
+	wire		gs_out_enable;
+	
+	reg [31:0]  rhostdata_inout;
+	reg [7:0]	tmp_cnt;
+	
+	xfer_buffer U0 (
+		.reset(reset), 
+		.clock_host(clock_host), 
+		.host_select(host_select),
+		.hwrite_enable(hwrte_enable),
+	//	.buf_address(buf_address),
+		.hostdata_inout(hostdata_inout),
+		.gs_select(gs_select),
+		.gs_write_enable(gs_write_enable),
+		.gs_out(gs_out),
+		.gs_out_enable(gs_out_enable)
+	);
+	
+	assign hostdata_inout = rhostdata_inout;
+	
+	initial 
+	begin
+		reset <= 1;
+		clock_host <= 0;
+		host_select <= 0;
+		hwrite_enable <= 0;
+		gs_select <= 0;
+		gs_write_enable <= 0;
+		tmp_cnt <= 0;
+	end
+	
+	always
+		#5 clock_host = !clock_host;
+		
+	initial
+	begin
+		#10 reset = 0;
+		#20 host_select = 1;
+		#20 hwrite_enable = 1;
+	end
+	
+	initial 
+	forever begin
+		@ (host_select);
+		@ (hwrite_enable);
+		@ (posedge clock_host)
+		rhostdata_inout =  tmp_cnt;
+		tmp_cnt = tmp_cnt + 1;
+		if (tmp_cnt == 1024) begin
+			tmp_cnt = 0;
+			host_select = 0;
+			hwrite_enable = 0;
+		end
+	end
+		
+endmodule
+		
