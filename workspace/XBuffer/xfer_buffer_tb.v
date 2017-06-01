@@ -4,6 +4,7 @@ module xfer_buffer_tb ();
 	parameter io_act_writing = 2;
 	parameter io_get_tx_buf = 3;
 	parameter io_act_reading = 4;
+	parameter io_act_mem_writing = 5;
 	
 	reg clock_host;
 	reg reset, host_select, hwrite_enable, gs_select, gs_write_enable;
@@ -12,6 +13,12 @@ module xfer_buffer_tb ();
 	wire [7:0] 	gs_out;
 	wire		gs_out_enable;
 	reg [15:0]	tmp_cnt;
+	
+	reg clock_fpga;
+	reg xfer_buf_select;
+	reg mwrite_enable;
+	reg [31:0] tbm_address;
+	wire	xfer_complete;
 
 	// for inout wire,
 	reg [31:0]	hostdata_out;
@@ -25,6 +32,7 @@ module xfer_buffer_tb ();
 	initial 
 	begin
 		clock_host = 1'b1;
+		clock_fpga = 1'b1;
 		reset = 1'b1;
 		host_select = 1'b0;
 		hwrite_enable = 1'b0;
@@ -33,9 +41,12 @@ module xfer_buffer_tb ();
 		tmp_cnt = 16'h0000;
 		drive_w_enable = 1'b0;
 		io_mode = io_get_rxbuf; 
+		xfer_buf_select = 1'b0;
+		mwrite_enable = 1'b0;
 	end
 	
 	always #5 clock_host = ~clock_host;
+	always #7 clock_fpga = ~clock_fpga;
 	 
 	initial
 	begin
@@ -65,7 +76,7 @@ module xfer_buffer_tb ();
 			tmp_cnt = 0; 
 			host_select = 0; 
 			hwrite_enable = 0;
-			io_mode = io_act_nothing;
+			io_mode = io_act_mem_writing;
 		end 
 		
 		if (io_mode == io_act_writing) begin 
@@ -77,6 +88,16 @@ module xfer_buffer_tb ();
 			$display("TB @%d> tmp_cnt:%d", $time, tmp_cnt);
 			
 			tmp_cnt = tmp_cnt + 1; 
+		end
+		
+		// 4. rx_buf --> tbm
+		if (io_mode == io_act_mem_writing) begin
+			$display("@%d:io_act_mem_writing",$time);
+			xfer_buf_select = 1;
+			mwrite_enable = 1;
+			tbm_address = 0;
+			if (xfer_complete == 1)
+				$display ("@%d: data transfer (-> tbm) is done", $time);
 		end
 	end
 
@@ -90,7 +111,12 @@ module xfer_buffer_tb ();
 		.gs_select(gs_select),
 		.gs_write_enable(gs_write_enable),
 		.gs_out(gs_out),
-		.gs_out_enable(gs_out_enable)
+		.gs_out_enable(gs_out_enable),
+		.clock_fpga(clock_fpga),
+		.xfer_buf_select(xfer_buf_select),
+		.mwrite_enable(mwrite_enable),
+		.tbm_address(tbm_address),
+		.xfer_complete(xfer_complete)
 	);
 	
 		
