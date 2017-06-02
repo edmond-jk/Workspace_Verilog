@@ -1,11 +1,15 @@
 module ifq_tb();
 	parameter io_act_initialize		= 0;
-	parameter io_cmd_issue 			= 1;
+	parameter io_act_write_issue	= 1;
 	parameter io_get_rxbuf 			= 2;
 	parameter io_act_writing 		= 3;
-	parameter io_get_tx_buf 		= 4;
+	parameter io_get_txbuf 			= 4;
 	parameter io_act_reading 		= 5;
 	parameter io_act_mem_writing 	= 6;
+	parameter io_act_read_issue		= 7;
+	parameter io_act_mem_reading	= 8;
+	parameter io_act_write_query	= 9;	
+	parameter io_act_read_query		= 10;
 
 	// common ports	
 	reg clock_host;
@@ -25,7 +29,7 @@ module ifq_tb();
 	reg				queryin_select;
 	wire			queryout_select;
 	wire [7:0]		querydata_inout;
-	reg [7:0]		reg_querydata_out;	
+	reg [7:0]		querydata_out;	
 	reg				querydata_flow;
 	
 	wire			sq_select;
@@ -44,7 +48,7 @@ module ifq_tb();
 	reg [31:0]	hostdata_out;
 	reg			drive_w_enable;
 	
-	reg [3:0]	io_mode; // 0: nothing, 1: rx_buf, 2: write, 3: tx_buf, 4: read
+	reg [7:0]	io_mode; // 0: nothing, 1: rx_buf, 2: write, 3: tx_buf, 4: read
 
 	// connections between xfer_buffer and tbm 
 	wire [31:0] address_0;
@@ -52,6 +56,7 @@ module ifq_tb();
 	wire [255:0] data_0;
 	
 	assign hostdata_inout = (drive_w_enable) ? hostdata_out : 32'hz;
+	assign querydata_inout = (querydata_flow) ? querydata_out : 8'bz;
 
 	initial 
 	begin
@@ -64,7 +69,7 @@ module ifq_tb();
 		gs_write_enable = 1'b0;
 		tmp_cnt = 16'h0000;
 		drive_w_enable = 1'b0;
-		io_mode = io_cmd_issue; 
+		io_mode = io_act_initialize; 
 		cdb_row = 0;
 	end
 	
@@ -73,7 +78,8 @@ module ifq_tb();
 	 
 	initial
 	begin
-		#10 reset = 0;
+		#10 reset <= 1'b0;
+		io_mode <= io_act_write_issue;
 	end
 	
 	/*
@@ -85,16 +91,16 @@ module ifq_tb();
 	 * 
 	 * BSM_READ
 	 * 1. CMD
-	 * 2. Query command
+	 * 2. Query command (Data is ready in the TBM.)
 	 * 3. Query command status
-	 * 4. GRS + fake write 
+	 * 4. GRS + fake write  (Data is ready in the xfer_buffer)
 	 */
 	
 	initial 
 	forever begin 
-		@ (posedge clock_host or negedge clock_host) 
+		@ (posedge clock_host or negedge clock_host)
 		// 0. issue write command 
-		if (io_mode == io_cmd_issue) begin
+		if (io_mode == io_act_write_issue) begin
 			cmdq_select = 1'b1;
 			if (cdb_row == 0) begin
 				cmd_in = {8'h00, 8'h00, 8'h00, 8'h40};	
@@ -126,43 +132,123 @@ module ifq_tb();
 		if (io_mode == io_get_rxbuf) begin
 			gs_select = 1'b1;
 			gs_write_enable = 1'b1;
-		end
-		// 2. before transferring data to HD, you have to confirm if there are available buffers. 
-		if (gs_out_enable) begin
-			$display("TB @%d> gs_out:%h", $time, gs_out);
-			gs_select = 1'b0;
-			gs_write_enable = 1'b0;
-			if (gs_out != 0) begin
-				io_mode = io_act_writing;	
+		
+			if (gs_out_enable) begin
+				$display("TB @%d> gs_out:%h", $time, gs_out);
+				gs_select = 1'b0;
+				gs_write_enable = 1'b0;
+				if (gs_out != 0) begin
+					io_mode = io_act_writing;	
+				end
 			end
 		end
+		// 2. before transferring data to HD, you have to confirm if there are available buffers. 
 			
 		// 3. data transfer 	
-		if (tmp_cnt == 1024) begin 
-			tmp_cnt = 0; 
-			host_select = 0; 
-			hwrite_enable = 0;
-			io_mode = io_act_mem_writing;
-		end 
-		
 		if (io_mode == io_act_writing) begin 
-			host_select = 1;
-			drive_w_enable = 1;	
-			hostdata_out =  tmp_cnt; 
-			hwrite_enable =  1;
+			if (tmp_cnt == 1024) begin 
+				tmp_cnt = 0; 
+				host_select = 0; 
+				hwrite_enable = 0;
+				io_mode = io_act_write_query;
+			end else begin
+				host_select = 1;
+				drive_w_enable = 1;	
+				hostdata_out =  tmp_cnt; 
+				hwrite_enable =  1;
+//				$display("TB @%d> tmp_cnt:%d", $time, tmp_cnt);
+				tmp_cnt = tmp_cnt + 1; 
+			end
+		end
 		
-			$display("TB @%d> tmp_cnt:%d", $time, tmp_cnt);
+		if (io_mode == io_act_write_query) begin
+			
+			if (queryout_select) begin
+				$display("querydata_out:%b", querydata_inout [3:2]);
+				
+				if (querydata_inout [3:2] == 2'b11) begin
+					io_mode = io_act_read_issue;
+					$display ("io_act_read_issue");
+				end
+			end
+
+			if (queryin_select == 1'b0) begin
+				queryin_select = 1'b1;
+				querydata_flow = 1'b1;
+				querydata_out = 8'h00;
+			end else begin
+				queryin_select = 1'b0;
+				querydata_flow = 1'b0;
+			end
+		end
+	
+		if (io_mode == io_act_read_issue) begin
+			queryin_select = 1'b0;
+			querydata_flow = 1'b0;
+			
+			cmdq_select = 1'b1;
+			if (cdb_row == 0) begin
+				cmd_in = {8'h00, 8'h00, 8'h00, 8'h30};	
+				cdb_row = cdb_row + 1;
+			end
+			else if (cdb_row == 1) begin
+				cmd_in = 32'h00000000;
+				cdb_row = cdb_row + 1;
+			end
+			else if (cdb_row == 2) begin
+				cmd_in = 32'h00000000;
+				cdb_row = cdb_row + 1;
+			end
+			else if (cdb_row == 3) begin
+				cmd_in = {8'h01, 8'h00, 16'h0008};
+				cdb_row = cdb_row + 1;
+			end
+			else if ((cdb_row == 4) || (cdb_row == 5) || (cdb_row == 6) || (cdb_row == 7)) begin
+				cmd_in = 32'h00000000;
+				cdb_row = cdb_row + 1;
+			end
+			else if (cdb_row == 8) begin
+				io_mode = io_get_txbuf;	
+				cdb_row = 0;
+				cmdq_select = 1'b0;
+			end
+		end
+		
+		if (io_mode == io_get_txbuf) begin
+			gs_select = 1'b1;
+			gs_write_enable = 1'b0;
+		
+			if (gs_out_enable) begin
+				$display("TB @%d> gs_out:%h", $time, gs_out);
+				gs_select = 1'b0;
+				gs_write_enable = 1'b0;
+				if (gs_out != 0) begin
+					io_mode = io_act_reading;	
+				end
+			end
+		end
+	
+		
+		if (io_mode == io_act_reading) begin 
+			if (tmp_cnt == 1024) begin 
+				tmp_cnt = 0; 
+				host_select = 0; 
+				hwrite_enable = 0;
+				$finish;
+			end 
+			
+			host_select = 1;
+			drive_w_enable = 1'b0;	
+			hwrite_enable =  0;
+		
+//			$display("TB @%d> tmp_cnt:%d", $time, tmp_cnt);
 			
 			tmp_cnt = tmp_cnt + 1; 
 		end
 		
-		// 4. rx_buf --> tbm
-		if (io_mode == io_act_mem_writing) begin
-			$display("@%d:io_act_mem_writing",$time);
-			
-			if (xfer_complete == 1)
-				$display ("@%d: data transfer (-> tbm) is done", $time);
-		end
+		// 4. rx_buf --> tbm 
+		if (xfer_complete == 1)
+			$display ("@%d: data transfer (-> tbm) is done", $time);
 	end
 
 	xfer_buffer U0 (

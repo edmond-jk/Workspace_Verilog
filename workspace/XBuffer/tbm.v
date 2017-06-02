@@ -39,7 +39,7 @@ assign data_0 = (cs_0 && !we_0) ? data_0_out : 256'bz;
 always @ (posedge clock or negedge clock)
 begin
 	if (cs_0 && we_0) begin
-		$display("W@%d : data:%d", $time, data_0);
+//		$display("W@%d : data:%d", $time, data_0);
 		Mem[(address_0 >> 5)] <= data_0;
 	end
 end
@@ -48,7 +48,7 @@ always @ (posedge clock or negedge clock)
 begin
 	if (cs_0 && !we_0) begin
 		data_0_out <= Mem[(address_0 >> 5)];
-		$display("R@%d : data:%d", $time, data_0_out);
+//		$display("R@%d : data:%d", $time, data_0_out);
 	end else begin
 		data_0_out <= 0;
 	end

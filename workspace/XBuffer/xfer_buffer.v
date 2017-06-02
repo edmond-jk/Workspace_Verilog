@@ -140,7 +140,7 @@ begin
 		end
 	end
 			
-	$display("XB @%d> clock:%b, host_select:%b, hwrite_enable:%b", $time, clock_host, host_select, hwrite_enable);
+//	$display("XB @%d> clock:%b, host_select:%b, hwrite_enable:%b", $time, clock_host, host_select, hwrite_enable);
 
 	case (io_host_mode)
 		io_host_writing: 
@@ -149,7 +149,7 @@ begin
 			rx_buffer[hrx_idx] = hostdata_inout; 
 			offset_in_rxh = offset_in_rxh + 1;
 
-			$display("XB @%d> host_data:%d, rx_head:%d, offset_in_rxh:%d", $time, hostdata_inout, rx_head, offset_in_rxh);
+//			$display("XB @%d> host_data:%d, rx_head:%d, offset_in_rxh:%d", $time, hostdata_inout, rx_head, offset_in_rxh);
 
 			if (offset_in_rxh == UNIT_BUF_BY_4B) begin // 4096 Bytes / 4 Bytes --> 1024, 10 bits 
 				offset_in_rxh = 16'h0000;	
@@ -196,6 +196,7 @@ begin
 	end 
 	// check these 
 	chip_select = 0;
+	xfer_complete = 1'b0;
 	
 	case (io_tbm_mode)
 		io_tbm_writing:
@@ -217,6 +218,8 @@ begin
 				if (offset_in_rxt == UNIT_BUF_BY_4B) begin
 					offset_in_rxt = 16'h0;
 					xfer_complete = 1'b1;
+					
+					$display ("io_tbm_writing complete 4KB data transfer");
 					io_tbm_mode = io_tbm_nothing;
 					
 					rx_tail = rx_tail + 1; 

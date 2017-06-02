@@ -2,6 +2,8 @@
 /*
  * If read command comes before writing the data with the same address, . 
  * Currently this condition have to be solved in the device driver. 
+ * 
+ * TBM allocation depends on the device driver. 
  */
 module ifq(
 	reset,
@@ -54,7 +56,6 @@ reg					querydata_flow;
 reg [7:0] 			ifcmdQ[`MAX_CMDQ_DEPTH-1:0][31:0]; //1 byte x 32 bytes x 32
 reg [7:0]			head, tail, current;
 reg [7:0]			in_offset, out_offset;
-reg					ev_xfer_complete;	
 reg	[7:0]			offset_by_byte, valid_byte, count_rx, count_tx;
 reg [15:0]			req_size, tmp_address;
 reg [1:0]			current_xtbm_mode; // io mode between xfer_buffer and tbm	
@@ -72,7 +73,6 @@ begin
 		current = 8'h00;
 		in_offset = 8'h00;
 		out_offset = 8'h00;
-		ev_xfer_complete = 1'b0;
 		querydata_flow = 1'b0;
 		count_rx = 8'h00;
 		count_tx = 8'h00;
@@ -134,8 +134,9 @@ begin
 					mwrite_enable = 1;
 					 
 					tbm_address = ifcmdQ[current][`INTERNAL_BUF_BASE + count_rx * 2];
-					wait (ev_xfer_complete == 1'b1);
-					
+					wait (xfer_complete == 1'b1);
+			
+					$display ("exit from wait()");		
 					xfer_buf_select = 1'b0;
 					mwrite_enable = 1'b0;
 				end
@@ -226,7 +227,7 @@ begin
 							mwrite_enable = 0;
 						 	tbm_address = ifcmdQ[tail][`INTERNAL_BUF_BASE + count_tx * 2]; 
 						 	
-						 	wait (ev_xfer_complete == 1'b1);
+						 	wait (xfer_complete == 1'b1);
 							xfer_buf_select = 1'b0;
 						end
 						count_tx = count_tx + 1;
