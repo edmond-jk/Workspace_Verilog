@@ -54,6 +54,7 @@ module ifq_tb();
 	wire [31:0] address_0;
 	wire 		cs_0, we_0;
 	wire [255:0] data_0;
+	reg  [3:0]	 read_skip_count;
 	
 	assign hostdata_inout = (drive_w_enable) ? hostdata_out : 32'hz;
 	assign querydata_inout = (querydata_flow) ? querydata_out : 8'bz;
@@ -71,6 +72,7 @@ module ifq_tb();
 		drive_w_enable = 1'b0;
 		io_mode = io_act_initialize; 
 		cdb_row = 0;
+		read_skip_count = 0;
 	end
 	
 	always #5 clock_host = ~clock_host;
@@ -154,6 +156,7 @@ module ifq_tb();
 			end else begin
 				host_select = 1;
 				drive_w_enable = 1;	
+//				hostdata_out =  32'b0000_0000_0000_0000_0000_0000_0000_0011; 
 				hostdata_out =  tmp_cnt; 
 				hwrite_enable =  1;
 //				$display("TB @%d> tmp_cnt:%d", $time, tmp_cnt);
@@ -208,12 +211,33 @@ module ifq_tb();
 				cdb_row = cdb_row + 1;
 			end
 			else if (cdb_row == 8) begin
-				io_mode = io_get_txbuf;	
+				io_mode = io_act_read_query;	
 				cdb_row = 0;
 				cmdq_select = 1'b0;
 			end
 		end
 		
+
+		if (io_mode == io_act_read_query) begin
+			if (queryout_select) begin
+				$display("querydata_out:%b", querydata_inout [3:2]);
+				
+				if (querydata_inout [3:2] == 2'b11) begin
+					io_mode = io_get_txbuf;
+					$display ("io_act_read_issue");
+				end
+			end
+
+			if (queryin_select == 1'b0) begin
+				queryin_select = 1'b1;
+				querydata_flow = 1'b1;
+				querydata_out = 8'h00;
+			end else begin
+				queryin_select = 1'b0;
+				querydata_flow = 1'b0;
+			end
+		end
+
 		if (io_mode == io_get_txbuf) begin
 			gs_select = 1'b1;
 			gs_write_enable = 1'b0;
@@ -227,7 +251,6 @@ module ifq_tb();
 				end
 			end
 		end
-	
 		
 		if (io_mode == io_act_reading) begin 
 			if (tmp_cnt == 1024) begin 
@@ -241,9 +264,15 @@ module ifq_tb();
 			drive_w_enable = 1'b0;	
 			hwrite_enable =  0;
 		
-//			$display("TB @%d> tmp_cnt:%d", $time, tmp_cnt);
-			
-			tmp_cnt = tmp_cnt + 1; 
+			$display("TB @%d> tmp_cnt:%d, data:%h", $time, tmp_cnt, hostdata_inout);
+		
+			if (read_skip_count < 3) begin
+				read_skip_count = read_skip_count + 1;
+				tmp_cnt = 0;
+			end
+			if (read_skip_count == 3) begin	
+				tmp_cnt = tmp_cnt + 1;
+			end 
 		end
 		
 		// 4. rx_buf --> tbm 

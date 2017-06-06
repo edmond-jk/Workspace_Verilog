@@ -82,6 +82,7 @@ reg [15:0]					hrx_idx, htx_idx, mx_idx; // idx is in total rx/tx buffers
 reg [15:0]					offset_in_rxh, offset_in_rxt, offset_in_txh, offset_in_txt;
 reg [1:0]					io_host_mode, io_tbm_mode;
 reg [3:0]					mx_count;
+reg [3:0]					tbm_read_wait_cycles, init_tx_skip;
 
 assign hostdata_inout = hdataflow_select ? rhostdata_inout : 32'bz; //hdataflow_select is 0, host -> xfer_buffer
 assign mdata_inout	= mdataflow_select ? reg_mdata_inout : 256'bz;
@@ -106,6 +107,8 @@ begin
 	 
 	 io_host_mode = io_host_nothing;
 	 io_tbm_mode = io_tbm_nothing;
+	 tbm_read_wait_cycles = 0;
+	 init_tx_skip = 0;
 	 end
 end
 
@@ -121,9 +124,9 @@ begin
 		end else begin
 			gs_out_enable = 1'b1;
 			if (tx_head >= tx_tail)
-				gs_out = MAX_BUFQ_DEPTH - (tx_head - tx_tail) - 1;
+				gs_out = tx_head - tx_tail;
 			else
-				gs_out = tx_tail - tx_head - 1;
+				gs_out = MAX_BUFQ_DEPTH - tx_tail + tx_head; 
 		end
 	end else begin
 		gs_out_enable = 1'b0;
@@ -135,8 +138,10 @@ begin
 	if ((io_host_mode == io_host_nothing) && host_select) begin
 		if (hwrite_enable) begin
 			io_host_mode = io_host_writing;
+			hdataflow_select = 1'b0;
 		end else begin
 			io_host_mode = io_host_reading;
+			hdataflow_select = 1'b1;
 		end
 	end
 			
@@ -166,7 +171,10 @@ begin
 			if (tx_head != tx_tail) begin // There are something in tx_buffer. 
 				htx_idx = tx_tail * UNIT_BUF_BY_4B + offset_in_txt; 
 				rhostdata_inout = tx_buffer[htx_idx];
-				offset_in_txt = offset_in_txt + 1;			
+
+				$display("xbuf@%d: offset:%d, hostdata_out:%h", $time, offset_in_txt, rhostdata_inout);		
+
+				offset_in_txt = offset_in_txt + 1;	
 			
 				if (offset_in_txt == UNIT_BUF_BY_4B) begin // 32 bits x 8 = 256 bits
 					offset_in_txt = 16'h0000;
@@ -232,28 +240,47 @@ begin
 		
 		io_tbm_reading:
 		begin
-			if (tx_head != tx_tail) begin
+			if ((tx_head - tx_tail + 1 != MAX_BUFQ_DEPTH) && (tx_tail - tx_head !== 1)) begin
 				chip_select = 1;
 				write_enable = 0;
 				mdataflow_select = 0;
 				
-				maddress = tx_address;
-				
-				for (mx_count = 0; mx_count < 8; mx_count = mx_count + 1) begin
-					mx_idx = tx_head * UNIT_BUF_BY_4B + offset_in_rxh;
-					tx_buffer[mx_idx] = mdata_inout[32* mx_count +: 32];
-					offset_in_txh = offset_in_txh + 1;
-					tx_address = tx_address + 4;
+			
+				if (tbm_read_wait_cycles <= 2)	begin
+					tbm_read_wait_cycles = tbm_read_wait_cycles + 1; // TODO: to be modified 
+					maddress = tx_address;
 				end
+					
+				if (tbm_read_wait_cycles > 2) begin 
+					
+					if (init_tx_skip == 1) begin 
+						offset_in_txh = 0;
+						init_tx_skip = 4;
+					end else if (init_tx_skip == 0) begin
+						init_tx_skip = 1;
+						mx_count = 8;
+					end
+						
+					for (mx_count = 0; mx_count < 8; mx_count = mx_count + 1) begin
+						
+						mx_idx = tx_head * UNIT_BUF_BY_4B + offset_in_txh;
+						tx_buffer[mx_idx] = mdata_inout[32* mx_count +: 32];
+						offset_in_txh = offset_in_txh + 1;
+						tx_address = tx_address + 4;
+					end
+						maddress = tx_address;
+					
+					if (offset_in_txh == UNIT_BUF_BY_4B) begin
+						offset_in_txh = 16'h0;
+						xfer_complete = 1'b1; 
+						tbm_read_wait_cycles = 0;
+						init_tx_skip = 0;
+						io_tbm_mode = io_tbm_nothing;
 				
-				if (offset_in_txh == UNIT_BUF_BY_4B) begin
-					offset_in_txh = 16'h0;
-					xfer_complete = 1'b1; 
-					io_tbm_mode = io_tbm_nothing;
-				
-					tx_head <= tx_head + 1;
-					if (tx_head == MAX_BUFQ_DEPTH) begin
-						tx_head <= 4'h0;
+						tx_head <= tx_head + 1;
+						if (tx_head == MAX_BUFQ_DEPTH) begin
+							tx_head <= 4'h0;
+						end
 					end
 				end
 			end
