@@ -61,6 +61,7 @@ reg [15:0]			req_size, tmp_address;
 reg [1:0]			current_xtbm_mode; // io mode between xfer_buffer and tbm	
 reg [1:0]			before_xtbm_mode;
 reg [7:0]			count_cmd_in;
+reg					tbm_read_wait, tbm_write_wait;
 
 assign querydata_inout = (querydata_flow) ? reg_querydata_inout : 8'hz; 
 
@@ -78,6 +79,8 @@ begin
 		count_tx = 8'h00;
 		current_xtbm_mode = `XTBM_NOTHING;
 		before_xtbm_mode = `XTBM_READING;
+		tbm_read_wait = 0;
+		tbm_write_wait = 0;
 	end
 end
 
@@ -103,13 +106,10 @@ end
 always @ (posedge clock_host or negedge clock_host or posedge clock_fpga or negedge clock_fpga)
 begin
 	if (current_xtbm_mode == `XTBM_NOTHING) begin
-		if (before_xtbm_mode == `XTBM_READING)  begin
-			current_xtbm_mode = `XTBM_WRITING;
-			before_xtbm_mode = `XTBM_WRITING;
-		end else begin
+		if (tbm_read_wait) 
 			current_xtbm_mode = `XTBM_READING;
-			before_xtbm_mode = `XTBM_READING;
-		end
+		else if (tbm_write_wait) 
+			current_xtbm_mode = `XTBM_WRITING;
 	end
 end
 		
@@ -123,8 +123,10 @@ begin
 		
 		if (ifcmdQ[current][`CMD_TYPE] == `BSM_WRITE) begin
 			
-			if (current_xtbm_mode == `XTBM_READING || current_xtbm_mode == `XTBM_NOTHING)	
+			if (current_xtbm_mode == `XTBM_READING || current_xtbm_mode == `XTBM_NOTHING) begin	
+				tbm_write_wait = 1;	
 				wait(current_xtbm_mode == `XTBM_WRITING);
+			end
 			
 			while (count_rx < req_size) 
 			begin
@@ -141,20 +143,17 @@ begin
 					mwrite_enable = 1'b0;
 				end
 				count_rx = count_rx + 1;
-			end
+			end // while loop
 			/*
 			 * TODO: This command has to be copied to the storage queue. 
 			 */
 			
 			current_xtbm_mode = `XTBM_NOTHING;	
+			tbm_write_wait = 0;
 			count_rx = 0;	
 			ifcmdQ[current][`OP_STATUS] = `ST_DONEB;
 			
 		end else if (ifcmdQ[current][`CMD_TYPE] == `BSM_READ) begin
-			if (current_xtbm_mode == `XTBM_WRITING) begin
-				current_xtbm_mode = `XTBM_NOTHING;
-			end
-		
 			while (count_rx < req_size)  // TODO 
 			begin
 				valid_byte = ifcmdQ[current][`VALID_BITS];	
@@ -174,6 +173,7 @@ begin
 			if (ifcmdQ[current][`OP_STATUS] != `ST_WAITS)
 				ifcmdQ[current][`OP_STATUS]	 = `ST_DONEB;
 		end
+		
 		current = current + 1;
 		if (current == `MAX_CMDQ_DEPTH)
 			current = 8'h00; 
@@ -217,8 +217,10 @@ begin
 					queryout_select = 1'b1;
 					querydata_flow = 1'b1;
 				
-					if ((current_xtbm_mode == `XTBM_WRITING) || (current_xtbm_mode == `XTBM_NOTHING)) 
+					if ((current_xtbm_mode == `XTBM_WRITING) || (current_xtbm_mode == `XTBM_NOTHING)) begin 
+						tbm_read_wait = 1;
 						wait (current_xtbm_mode == `XTBM_READING);
+					end
 					
 					while (count_tx < 8) begin
 						valid_byte = ifcmdQ[tail][`VALID_BITS];
@@ -234,6 +236,7 @@ begin
 					end // while 
 				
 					current_xtbm_mode = `XTBM_NOTHING;
+					tbm_read_wait = 0;
 						
 					ifcmdQ[tail][`OP_STATUS] = `ST_FREE;
 					tail = tail + 1;

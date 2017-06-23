@@ -1,0 +1,22 @@
+# Reading C:/intelFPGA_lite/17.0/modelsim_ase/tcl/vsim/pref.tcl
+# vsim -gui -modelsimini C:/Users/JK/AppData/Local/Temp/SigasiCompileCache5862321838578110599/aes_hv/mentor/modelsim.ini work.tb_aes_keymap 
+# Start time: 12:18:45 on Jun 23,2017
+# Loading work.tb_aes_keymap
+# Loading work.aes_keymap
+# Loading work.aes_sbox
+add wave -position insertpoint  \
+sim:/tb_aes_keymap/tb_clk \
+sim:/tb_aes_keymap/tb_reset_n \
+sim:/tb_aes_keymap/tb_ready \
+sim:/tb_aes_keymap/tb_key \
+sim:/tb_aes_keymap/tb_sboxw \
+sim:/tb_aes_keymap/tb_new_sboxw \
+sim:/tb_aes_keymap/round_key \
+sim:/tb_aes_keymap/in_block \
+sim:/tb_aes_keymap/out_block
+run -all
+# Break in Module aes_keymap at C:/Workspace_Verilog/aes_hv/aes_keymap.v line 116
+run -all
+# Break in Module aes_keymap at C:/Workspace_Verilog/aes_hv/aes_keymap.v line 116
+run -continue
+# Break in Module aes_keymap at C:/Workspace_Verilog/aes_hv/aes_keymap.v line 92
