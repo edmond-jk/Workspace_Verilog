@@ -1,6 +1,6 @@
 module aes_sbox (
-	input wire [31:0] 		in_block_0, in_block_1, in_block_2, in_block_3, in_block_4, in_block_5, in_block_6, in_block_7, in_block_8, in_block_9,
-	output wire [31:0] 	out_block_0, out_block_1, out_block_2, out_block_3, out_block_4, out_block_5, out_block_6, out_block_7, out_block_8, out_block_9
+	input wire [127:0] 		in_block_0, in_block_1, in_block_2, in_block_3, in_block_4, in_block_5, in_block_6, in_block_7, in_block_8, in_block_9,
+	output wire [127:0] 	out_block_0, out_block_1, out_block_2, out_block_3, out_block_4, out_block_5, out_block_6, out_block_7, out_block_8, out_block_9
 	);
 	
 /*
@@ -12,7 +12,7 @@ module aes_sbox (
  * Parallel Muxes
  */
   genvar 	i; 
-  for (i = 0; i < 4; i = i + 1) 
+  for (i = 0; i < 16; i = i + 1) 
   	begin 
   		assign out_block_0 [(i*8) +: 8] = sbox [in_block_0 [(i*8) +: 8]]; 
   		assign out_block_1 [(i*8) +: 8] = sbox [in_block_1 [(i*8) +: 8]]; 

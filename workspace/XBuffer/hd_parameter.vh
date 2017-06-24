@@ -4,6 +4,7 @@
 //size
 `define CDB_WIDTH		256
 `define MAX_CMDQ_DEPTH	32
+`define CMD_DATA_WIDTH	32
 
 // Bit field definition in a CDB
 `define	CMD_TYPE			0

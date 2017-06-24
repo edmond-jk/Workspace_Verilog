@@ -2,8 +2,8 @@ module aes_keymap (
   input wire 			clk, 
   input wire 			reset_n, 
   input wire [127:0] 	key, // 128 bit 
-  output wire [31:0]	sboxw, 
-  input wire  [31:0] 	new_sboxw,
+  output wire [127:0]	sboxw, 
+  input wire  [127:0] 	new_sboxw,
 
   output wire [127:0] 	round_key_1, 
   output wire [127:0] 	round_key_2, 
@@ -94,14 +94,14 @@ module aes_keymap (
   			begin
   			 round		= round + 1;	
   			 rotw 		= {keymap[current-1][23:0], keymap[current-1][31:24]}; 
-  			 tmp_sboxw 	= rotw; 
+  			 tmp_sboxw 	= {96'b0,rotw}; 
   			 tmp_key	= keymap[current -4] ^ rcon[round]; 
   			 
   			 current_state = MIXW;
   			end
   		MIXW:
   			begin 
-  				keymap[current] = tmp_key ^ new_sboxw; 
+  				keymap[current] = tmp_key ^ new_sboxw[31:0]; 
   				current = current + 1; 
   				
   				while ((current & 8'h3)) 

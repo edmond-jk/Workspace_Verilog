@@ -7,8 +7,8 @@ module tb_aes_keymap();
   wire				tb_ready;
   reg [127:0]		tb_key;
   
-  wire [31:0]		tb_sboxw;
-  wire [31:0]		tb_new_sboxw;
+  wire [127:0]		tb_sboxw;
+  wire [127:0]		tb_new_sboxw;
   wire [127:0]		round_key [0:9];
   wire [31:0]		in_block[0:8];
   wire [31:0]		out_block[0:8];

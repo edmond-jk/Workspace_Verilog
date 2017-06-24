@@ -1,9 +1,45 @@
 # Reading C:/intelFPGA_lite/17.0/modelsim_ase/tcl/vsim/pref.tcl
 # vsim -gui -modelsimini C:/Users/JK/AppData/Local/Temp/SigasiCompileCache5862321838578110599/aes_hv/mentor/modelsim.ini work.tb_aes_keymap 
-# Start time: 12:18:45 on Jun 23,2017
+# Start time: 12:58:19 on Jun 23,2017
 # Loading work.tb_aes_keymap
 # Loading work.aes_keymap
 # Loading work.aes_sbox
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_1'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_2'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_3'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_4'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_5'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_6'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_7'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_8'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'in_block_9'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(2).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_1'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_2'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_3'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_4'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_5'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_6'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_7'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_8'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
+# ** Warning: (vsim-3015) C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v(36): [PCDPC] - Port size (128) does not match connection size (32) for port 'out_block_9'. The port definition is at: C:/Workspace_Verilog/aes_hv/aes_sbox..v(3).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_aes_keymap/sbox File: C:/Workspace_Verilog/aes_hv/aes_sbox..v
 add wave -position insertpoint  \
 sim:/tb_aes_keymap/tb_clk \
 sim:/tb_aes_keymap/tb_reset_n \
@@ -16,7 +52,9 @@ sim:/tb_aes_keymap/in_block \
 sim:/tb_aes_keymap/out_block
 run -all
 # Break in Module aes_keymap at C:/Workspace_Verilog/aes_hv/aes_keymap.v line 116
-run -all
+run -continue
+# Break in NamedBeginStat aes_keymap_test at C:/Workspace_Verilog/aes_hv/tb_aes_keymap.v line 104
+run -continue
 # Break in Module aes_keymap at C:/Workspace_Verilog/aes_hv/aes_keymap.v line 116
 run -continue
 # Break in Module aes_keymap at C:/Workspace_Verilog/aes_hv/aes_keymap.v line 92

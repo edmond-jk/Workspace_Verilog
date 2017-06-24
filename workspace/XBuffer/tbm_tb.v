@@ -4,16 +4,16 @@ module tbm_tb();
 	parameter phase_reading = 2;
 	
 	reg clock;
-	reg [31:0] address_0, address_1;
-	reg cs_0, cs_1, we_0, we_1; 
-	wire [255:0] data_0, data_1;
+	reg [31:0] address_0;
+	reg cs_0, we_0; 
+	wire [255:0] data_0;
 	
-	reg [255:0] data_0_out, data_1_out;
-	reg			data_0_oe, data_1_oe;
+	reg [255:0] data_0_out;
+	reg			data_0_oe;
 	reg [1:0]	io_phase;
 
 	assign data_0 = (data_0_oe)? data_0_out:256'bz;
-	assign data_1 = (data_1_oe)? data_1_out:256'bz;
+//	assign data_1 = (data_1_oe)? data_1_out:256'bz;
 	
 	initial 
 	begin
@@ -51,12 +51,12 @@ module tbm_tb();
 	tbm U1 (
 		.clock(clock),
 		.cs_0(cs_0),
-		.cs_1(cs_1),
+	//	.cs_1(cs_1),
 		.we_0(we_0),
-		.we_1(we_1),
+	//	.we_1(we_1),
 		.data_0(data_0),
-		.data_1(data_1),
-		.address_0(address_0),
-		.address_1(address_1)
+	//	.data_1(data_1),
+		.address_0(address_0)
+	//	.address_1(address_1)
 	);
 endmodule 
