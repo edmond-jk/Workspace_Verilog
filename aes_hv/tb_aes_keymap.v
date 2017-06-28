@@ -9,9 +9,9 @@ module tb_aes_keymap();
   
   wire [127:0]		tb_sboxw;
   wire [127:0]		tb_new_sboxw;
-  wire [127:0]		round_key [0:9];
-  wire [31:0]		in_block[0:8];
-  wire [31:0]		out_block[0:8];
+  wire [127:0]		round_key [0:10];
+  wire [127:0]		in_block[0:9];
+  wire [127:0]		out_block[0:9];
   
   aes_keymap	dut (
   				.clk(tb_clk),
@@ -19,16 +19,17 @@ module tb_aes_keymap();
   				.key(tb_key),
   				.sboxw(tb_sboxw),
   				.new_sboxw(tb_new_sboxw),
-  				.round_key_1(round_key[0]),
-  				.round_key_2(round_key[1]),
-  				.round_key_3(round_key[2]),
-  				.round_key_4(round_key[3]),
-  				.round_key_5(round_key[4]),
-  				.round_key_6(round_key[5]),
-  				.round_key_7(round_key[6]),
-  				.round_key_8(round_key[7]),
-  				.round_key_9(round_key[8]),
-  				.round_key_10(round_key[9]),
+  				.round_key_0(round_key[0]),
+  				.round_key_1(round_key[1]),
+  				.round_key_2(round_key[2]),
+  				.round_key_3(round_key[3]),
+  				.round_key_4(round_key[4]),
+  				.round_key_5(round_key[5]),
+  				.round_key_6(round_key[6]),
+  				.round_key_7(round_key[7]),
+  				.round_key_8(round_key[8]),
+  				.round_key_9(round_key[9]),
+  				.round_key_10(round_key[10]),
   				.ready(tb_ready)
   				
   );
@@ -45,6 +46,7 @@ module tb_aes_keymap();
   				.in_block_7(in_block[6]),
   				.in_block_8(in_block[7]),
   				.in_block_9(in_block[8]),
+  				.in_block_10(in_block[9]),
   				.out_block_1(out_block[0]),
   				.out_block_2(out_block[1]),
   				.out_block_3(out_block[2]),
@@ -53,7 +55,8 @@ module tb_aes_keymap();
   				.out_block_6(out_block[5]),
   				.out_block_7(out_block[6]),
   				.out_block_8(out_block[7]),
-  				.out_block_9(out_block[8])
+  				.out_block_9(out_block[8]),
+  				.out_block_10(out_block[9])
   );
  
  // clock 

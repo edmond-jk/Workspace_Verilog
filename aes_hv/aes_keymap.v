@@ -5,6 +5,7 @@ module aes_keymap (
   output wire [127:0]	sboxw, 
   input wire  [127:0] 	new_sboxw,
 
+  output wire [127:0] 	round_key_0, 
   output wire [127:0] 	round_key_1, 
   output wire [127:0] 	round_key_2, 
   output wire [127:0] 	round_key_3, 
@@ -41,6 +42,7 @@ module aes_keymap (
   assign ready = tmp_ready;
   assign sboxw = tmp_sboxw;
   
+  assign round_key_0 	= {keymap[0],  keymap[1],  keymap[2],  keymap[3]};
   assign round_key_1 	= {keymap[4],  keymap[5],  keymap[6],  keymap[7]};
   assign round_key_2 	= {keymap[8],  keymap[9],  keymap[10], keymap[11]};
   assign round_key_3 	= {keymap[12], keymap[13], keymap[14], keymap[15]};
@@ -114,6 +116,11 @@ module aes_keymap (
  					begin
  						tmp_ready = 1'b1;
  						current_state = INIT;
+ 						for (i = 0; i <= 10; i = i + 1)
+ 							begin
+ 								$display("keymap %d>> %X", i, {keymap[4*i], keymap[4*i+1], keymap[4*i+2], keymap[4*i+3]});
+ 							end
+ 						
  					end
  				else
  					begin

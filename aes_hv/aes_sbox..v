@@ -1,6 +1,6 @@
 module aes_sbox (
-	input wire [127:0] 		in_block_0, in_block_1, in_block_2, in_block_3, in_block_4, in_block_5, in_block_6, in_block_7, in_block_8, in_block_9,
-	output wire [127:0] 	out_block_0, out_block_1, out_block_2, out_block_3, out_block_4, out_block_5, out_block_6, out_block_7, out_block_8, out_block_9
+	input wire [127:0] 		in_block_0, in_block_1, in_block_2, in_block_3, in_block_4, in_block_5, in_block_6, in_block_7, in_block_8, in_block_9, in_block_10,
+	output wire [127:0] 	out_block_0, out_block_1, out_block_2, out_block_3, out_block_4, out_block_5, out_block_6, out_block_7, out_block_8, out_block_9, out_block_10
 	);
 	
 /*
@@ -23,7 +23,8 @@ module aes_sbox (
   		assign out_block_6 [(i*8) +: 8] = sbox [in_block_6 [(i*8) +: 8]]; 
   		assign out_block_7 [(i*8) +: 8] = sbox [in_block_7 [(i*8) +: 8]]; 
   		assign out_block_8 [(i*8) +: 8] = sbox [in_block_8 [(i*8) +: 8]]; 
-  		assign out_block_9 [(i*8) +: 8] = sbox [in_block_9 [(i*8) +: 8]]; 
+  		assign out_block_9 [(i*8) +: 8] = sbox [in_block_9 [(i*8) +: 8]];
+  		assign out_block_10 [(i*8) +: 8] = sbox [in_block_10 [(i*8) +: 8]];
  	end 
   
   // Creating the sbox array contents
