@@ -69,8 +69,8 @@ module tb_aes_encipher_block ();
   				.new_sbox(tb_out_sblock[1]),
   				.input_block(tb_in_dblock[0]),
   				.output_block(tb_out_dblock[0]),
-  				.output_ctrl(tb_output_ctrl),
-  				.ready(tb_ready_ecipher_1)
+  				.oready(tb_output_ctrl),
+  				.iready(tb_ready_ecipher_1)
   );
   
   assign tb_in_dblock[0] = tb_block;
@@ -103,7 +103,7 @@ module tb_aes_encipher_block ();
   #(CLK_PERIOD);
   tb_reset_ecipher_1 = 1'b0;
   
-  while (!tb_ready_ecipher_1)
+  while (!tb_output_ctrl)
   	begin
   		#(CLK_PERIOD);
   	end

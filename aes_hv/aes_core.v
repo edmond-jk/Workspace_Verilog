@@ -116,26 +116,25 @@ module aes_core (
 		aes_encipher_block encBlock (
 			.clk(clk),
 			.reset_n(reset_encipher[i]),
-			.round(i),	
 			.round_key(round_key[i]),
 			.old_sbox(in_sblk[i]),
 			.new_sbox(out_sblk[i]),
 			.input_block(in_dblk_enc[i]),
 			.output_block(out_dblk_enc[i]),
-			.output_ctrl(octrl_enc[i]),
-			.ready(ready_encipher[i])
+			.oready(octrl_enc[i]),
+			.iready(ready_encipher[i])
 		);
 		
 		aes_decipher_block decBlock (
 			.clk(clk),
 			.reset_n(reset_decipher[i]),
-			.round_key(round_key[i]),
+			.round_key(round_key[N_aesblock - i]),
 			.old_sbox(in_invsblk[i]),
 			.new_sbox(out_invsblk[i]),
 			.input_block(in_dblk_dec[i]),
 			.output_block(out_dblk_dec[i]),
-			.output_ctrl(octrl_dec[i]),
-			.ready(ready_decipher[i])
+			.oready(octrl_dec[i]),
+			.iready(ready_decipher[i])
 		);
 	end 
 
@@ -148,19 +147,19 @@ module aes_core (
   			.new_sbox(out_sblk[N_aesblock]), 
   			.input_block(in_dblk_enc[N_aesblock]),
   			.output_block(out_dblk_enc[N_aesblock]),
-  			.output_ctrl(octrl_enc[N_aesblock]),
-  			.ready(ready_encipher[N_aesblock])
+  			.oready(octrl_enc[N_aesblock]),
+  			.iready(ready_encipher[N_aesblock])
   );
   aes_decipher_last_block decBlockLast (
 			.clk(clk),
 			.reset_n(reset_decipher[N_aesblock]),
-			.round_key(round_key[N_aesblock]),
+			.round_key(round_key[0]),
 			.old_sbox(in_invsblk[N_aesblock]),
 			.new_sbox(out_invsblk[N_aesblock]),
 			.input_block(in_dblk_dec[N_aesblock]),
 			.output_block(out_dblk_dec[N_aesblock]),
-			.output_ctrl(octrl_dec[N_aesblock]),
-			.ready(ready_decipher[N_aesblock])
+			.oready(octrl_dec[N_aesblock]),
+			.iready(ready_decipher[N_aesblock])
 		);
 
   assign in_dblk_enc[0] = block_enc;
@@ -171,7 +170,7 @@ module aes_core (
   assign in_dblk_dec[0] = block_dec;
   assign reset_decipher[0] = reset_dec;
   assign iready_dec = !v_in_decblk;
-  assign result_dec = out_dblk_enc[N_aesblock];
+  assign result_dec = out_dblk_dec[N_aesblock];
   
   assign reset_encipher[1] = tmp_reset_encipher;
   assign reset_decipher[1] = tmp_reset_decipher; 
@@ -215,11 +214,11 @@ module aes_core (
   			end
   	end
 
-  always @ (posedge clk or negedge reset_dec)
+  always @ (posedge clk)
   	begin
   		if (reset_dec)
   			begin
-  				tmp_out_dblk_dec = in_dblk_dec[0] ^ round_key[0]; 
+  				tmp_out_dblk_dec = in_dblk_dec[0] ^ round_key[10]; 
   				v_in_decblk = 1'b1;
   				tmp_reset_decipher = 1'b1;
   			end
