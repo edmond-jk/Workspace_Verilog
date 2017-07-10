@@ -1,6 +1,6 @@
 # Reading C:/intelFPGA_lite/17.0/modelsim_ase/tcl/vsim/pref.tcl
 # vsim -gui -modelsimini C:/Users/JK/AppData/Local/Temp/SigasiCompileCache7478334762390298727/aes_hv/mentor/modelsim.ini work.tb_aes_core 
-# Start time: 16:28:57 on Jun 28,2017
+# Start time: 08:43:31 on Jun 29,2017
 # Loading work.tb_aes_core
 # Loading work.aes_core
 # Loading work.aes_sbox
@@ -33,155 +33,270 @@ sim:/tb_aes_core/tb_oready_dec \
 sim:/tb_aes_core/tb_result_enc \
 sim:/tb_aes_core/tb_result_dec
 run -all
-# keymap   0>> 000102030405060708090a0b0c0d0e0f
-# keymap   1>> d6aa74fdd2af72fadaa678f1d6ab76fe
-# keymap   2>> b692cf0b643dbdf1be9bc5006830b3fe
-# keymap   3>> b6ff744ed2c2c9bf6c590cbf0469bf41
-# keymap   4>> 47f7f7bc95353e03f96c32bcfd058dfd
-# keymap   5>> 3caaa3e8a99f9deb50f3af57adf622aa
-# keymap   6>> 5e390f7df7a69296a7553dc10aa31f6b
-# keymap   7>> 14f9701ae35fe28c440adf4d4ea9c026
-# keymap   8>> 47438735a41c65b9e016baf4aebf7ad2
-# keymap   9>> 549932d1f08557681093ed9cbe2c974e
-# keymap  10>> 13111d7fe3944a17f307a78b4d2b30c5
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 70
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 49
 run -continue
-# INV_SUBBYTE: bd6e7c3df2b5779e0b61216e8b10b689
-# INV_SUBBYTE: fde3bad205e5d0d73547964ef1fe37f1
-# INV_SUBBYTE: d1876c0f79c4300ab45594add66ff41f
-# INV_SUBBYTE: c62fe109f75eedc3cc79395d84f9cf5d
-# INV_SUBBYTE: c81677bc9b7ac93b25027992b0261996
-# INV_SUBBYTE: 247240236966b3fa6ed2753288425b6c
-# INV_SUBBYTE: fa636a2825b339c940668a3157244d17
-# INV_SUBBYTE: 4915598f55e5d7a0daca94fa1f0a63f7
-# INV_SUBBYTE: 89d810e8855ace682d1843d8cb128fe4
-# INV_SUBBYTE: 00102030405060708090a0b0c0d0e0f0
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 80
-restart -f
-run -all
-# keymap   0>> 000102030405060708090a0b0c0d0e0f
-# keymap   1>> d6aa74fdd2af72fadaa678f1d6ab76fe
-# keymap   2>> b692cf0b643dbdf1be9bc5006830b3fe
-# keymap   3>> b6ff744ed2c2c9bf6c590cbf0469bf41
-# keymap   4>> 47f7f7bc95353e03f96c32bcfd058dfd
-# keymap   5>> 3caaa3e8a99f9deb50f3af57adf622aa
-# keymap   6>> 5e390f7df7a69296a7553dc10aa31f6b
-# keymap   7>> 14f9701ae35fe28c440adf4d4ea9c026
-# keymap   8>> 47438735a41c65b9e016baf4aebf7ad2
-# keymap   9>> 549932d1f08557681093ed9cbe2c974e
-# keymap  10>> 13111d7fe3944a17f307a78b4d2b30c5
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 59
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 49
 run -continue
-# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 208
-add wave -position insertpoint  \
-sim:/tb_aes_core/dut/key \
-sim:/tb_aes_core/dut/ready_key \
-sim:/tb_aes_core/dut/block_enc \
-sim:/tb_aes_core/dut/block_dec \
-sim:/tb_aes_core/dut/iready_enc \
-sim:/tb_aes_core/dut/iready_dec \
-sim:/tb_aes_core/dut/oready_enc \
-sim:/tb_aes_core/dut/oready_dec \
-sim:/tb_aes_core/dut/result_enc \
-sim:/tb_aes_core/dut/result_dec \
-sim:/tb_aes_core/dut/reset_encipher \
-sim:/tb_aes_core/dut/ready_encipher \
-sim:/tb_aes_core/dut/round_key \
-sim:/tb_aes_core/dut/in_sblk \
-sim:/tb_aes_core/dut/out_sblk \
-sim:/tb_aes_core/dut/in_dblk_enc \
-sim:/tb_aes_core/dut/out_dblk_enc \
-sim:/tb_aes_core/dut/octrl_enc \
-sim:/tb_aes_core/dut/reset_decipher \
-sim:/tb_aes_core/dut/ready_decipher \
-sim:/tb_aes_core/dut/in_invsblk \
-sim:/tb_aes_core/dut/out_invsblk \
-sim:/tb_aes_core/dut/in_dblk_dec \
-sim:/tb_aes_core/dut/out_dblk_dec \
-sim:/tb_aes_core/dut/octrl_dec \
-sim:/tb_aes_core/dut/v_in_encblk \
-sim:/tb_aes_core/dut/v_in_decblk \
-sim:/tb_aes_core/dut/tmp_out_dblk_enc \
-sim:/tb_aes_core/dut/tmp_out_dblk_dec \
-sim:/tb_aes_core/dut/tmp_reset_encipher \
-sim:/tb_aes_core/dut/tmp_reset_decipher
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
 run -continue
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 62
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 80
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 208
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 80
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 80
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 70
-run -continue
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 72
+# INV_SUBBYTE: eb40f21e592e38848ba113e71bc342d2
+# INV_SUBBYTE: ea835cf00445332d655d98ad8596b0c5
+# INV_SUBBYTE: 5a4142b11949dc1fa3e019657a8c040c
+# INV_SUBBYTE: 260e2e173d41b77de86472a9fdd28b25
+# INV_SUBBYTE: f1006f55c1924cef7cc88b325db5d50c
+# INV_SUBBYTE: e0927fe8c86363c0d9b1355085b8be01
+# INV_SUBBYTE: 486c4eee671d9d0d4de3b138d65f58e7
+# INV_SUBBYTE: aa8f5f0361dde3ef82d24ad26832469a
+# INV_SUBBYTE: a49c7ff2689f352b6b5bea43026a5049
+# INV_SUBBYTE: 193de3bea0f4e22b9ac68d2ae9f84808
+# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 103
 restart -f
 # Loading work.tb_aes_core
-run -continue
-# keymap   0>> 000102030405060708090a0b0c0d0e0f
-# keymap   1>> d6aa74fdd2af72fadaa678f1d6ab76fe
-# keymap   2>> b692cf0b643dbdf1be9bc5006830b3fe
-# keymap   3>> b6ff744ed2c2c9bf6c590cbf0469bf41
-# keymap   4>> 47f7f7bc95353e03f96c32bcfd058dfd
-# keymap   5>> 3caaa3e8a99f9deb50f3af57adf622aa
-# keymap   6>> 5e390f7df7a69296a7553dc10aa31f6b
-# keymap   7>> 14f9701ae35fe28c440adf4d4ea9c026
-# keymap   8>> 47438735a41c65b9e016baf4aebf7ad2
-# keymap   9>> 549932d1f08557681093ed9cbe2c974e
-# keymap  10>> 13111d7fe3944a17f307a78b4d2b30c5
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 59
-run -continue
-# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 208
-run -continue
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 62
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 65
-run -continue
-# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 208
-run -continue
-# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 67
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 81
-run -continue
-# INV_SUBBYTE: bd6e7c3df2b5779e0b61216e8b10b689
-# INV_SUBBYTE: fde3bad205e5d0d73547964ef1fe37f1
-# INV_SUBBYTE: d1876c0f79c4300ab45594add66ff41f
-# INV_SUBBYTE: c62fe109f75eedc3cc79395d84f9cf5d
-# INV_SUBBYTE: c81677bc9b7ac93b25027992b0261996
-# INV_SUBBYTE: 247240236966b3fa6ed2753288425b6c
-# INV_SUBBYTE: fa636a2825b339c940668a3157244d17
-# INV_SUBBYTE: 4915598f55e5d7a0daca94fa1f0a63f7
-# INV_SUBBYTE: 89d810e8855ace682d1843d8cb128fe4
-# INV_SUBBYTE: 00102030405060708090a0b0c0d0e0f0
+run -all
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
+run -all
 # Break key hit
-# Break in Module aes_encipher_block at C:/Workspace_Verilog/aes_hv/aes_encipher_block.v line 75
-# End time: 16:42:23 on Jun 28,2017, Elapsed time: 0:13:26
-# Errors: 0, Warnings: 0
+# Simulation stop requested.
+restart -f
+# Loading work.tb_aes_core
+run -all
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
+run -continue
+# INV_SUBBYTE: eb40f21e592e38848ba113e71bc342d2
+# INV_SUBBYTE: ea835cf00445332d655d98ad8596b0c5
+# INV_SUBBYTE: 5a4142b11949dc1fa3e019657a8c040c
+# INV_SUBBYTE: 260e2e173d41b77de86472a9fdd28b25
+# INV_SUBBYTE: f1006f55c1924cef7cc88b325db5d50c
+# INV_SUBBYTE: e0927fe8c86363c0d9b1355085b8be01
+# INV_SUBBYTE: 486c4eee671d9d0d4de3b138d65f58e7
+# INV_SUBBYTE: aa8f5f0361dde3ef82d24ad26832469a
+# INV_SUBBYTE: a49c7ff2689f352b6b5bea43026a5049
+# INV_SUBBYTE: 193de3bea0f4e22b9ac68d2ae9f84808
+# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 103
+restart -f
+# Loading work.tb_aes_core
+# Loading work.aes_core
+run -all
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
+run -all
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# INV_SUBBYTE: eb40f21e592e38848ba113e71bc342d2
+# INV_SUBBYTE: ea835cf00445332d655d98ad8596b0c5
+# INV_SUBBYTE: 5a4142b11949dc1fa3e019657a8c040c
+# INV_SUBBYTE: 260e2e173d41b77de86472a9fdd28b25
+# INV_SUBBYTE: f1006f55c1924cef7cc88b325db5d50c
+# INV_SUBBYTE: e0927fe8c86363c0d9b1355085b8be01
+# INV_SUBBYTE: 486c4eee671d9d0d4de3b138d65f58e7
+# INV_SUBBYTE: aa8f5f0361dde3ef82d24ad26832469a
+# INV_SUBBYTE: a49c7ff2689f352b6b5bea43026a5049
+# INV_SUBBYTE: 193de3bea0f4e22b9ac68d2ae9f84808
+# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 103
+restart -f
+# Loading work.tb_aes_core
+run -all
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# INV_SUBBYTE: eb40f21e592e38848ba113e71bc342d2
+# INV_SUBBYTE: ea835cf00445332d655d98ad8596b0c5
+# INV_SUBBYTE: 5a4142b11949dc1fa3e019657a8c040c
+# INV_SUBBYTE: 260e2e173d41b77de86472a9fdd28b25
+# INV_SUBBYTE: f1006f55c1924cef7cc88b325db5d50c
+# INV_SUBBYTE: e0927fe8c86363c0d9b1355085b8be01
+# INV_SUBBYTE: 486c4eee671d9d0d4de3b138d65f58e7
+# INV_SUBBYTE: aa8f5f0361dde3ef82d24ad26832469a
+# INV_SUBBYTE: a49c7ff2689f352b6b5bea43026a5049
+# INV_SUBBYTE: 193de3bea0f4e22b9ac68d2ae9f84808
+# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 103
+restart -f
+# Loading work.tb_aes_core
+run -all
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# INV_SUBBYTE: eb40f21e592e38848ba113e71bc342d2
+# INV_SUBBYTE: ea835cf00445332d655d98ad8596b0c5
+# INV_SUBBYTE: 5a4142b11949dc1fa3e019657a8c040c
+# INV_SUBBYTE: 260e2e173d41b77de86472a9fdd28b25
+# INV_SUBBYTE: f1006f55c1924cef7cc88b325db5d50c
+# INV_SUBBYTE: e0927fe8c86363c0d9b1355085b8be01
+# INV_SUBBYTE: 486c4eee671d9d0d4de3b138d65f58e7
+# INV_SUBBYTE: aa8f5f0361dde3ef82d24ad26832469a
+# INV_SUBBYTE: a49c7ff2689f352b6b5bea43026a5049
+# INV_SUBBYTE: 193de3bea0f4e22b9ac68d2ae9f84808
+# Break key hit
+# Simulation stop requested.
+restart -f
+run -continue
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# INV_SUBBYTE: eb40f21e592e38848ba113e71bc342d2
+# INV_SUBBYTE: ea835cf00445332d655d98ad8596b0c5
+# INV_SUBBYTE: 5a4142b11949dc1fa3e019657a8c040c
+# INV_SUBBYTE: 260e2e173d41b77de86472a9fdd28b25
+# INV_SUBBYTE: f1006f55c1924cef7cc88b325db5d50c
+# INV_SUBBYTE: e0927fe8c86363c0d9b1355085b8be01
+# INV_SUBBYTE: 486c4eee671d9d0d4de3b138d65f58e7
+# INV_SUBBYTE: aa8f5f0361dde3ef82d24ad26832469a
+# INV_SUBBYTE: a49c7ff2689f352b6b5bea43026a5049
+# INV_SUBBYTE: 193de3bea0f4e22b9ac68d2ae9f84808
+# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 104
+restart -f
+# Loading work.tb_aes_core
+run -all
+# keymap   0>> 2b7e151628aed2a6abf7158809cf4f3c
+# keymap   1>> a0fafe1788542cb123a339392a6c7605
+# keymap   2>> f2c295f27a96b9435935807a7359f67f
+# keymap   3>> 3d80477d4716fe3e1e237e446d7a883b
+# keymap   4>> ef44a541a8525b7fb671253bdb0bad00
+# keymap   5>> d4d1c6f87c839d87caf2b8bc11f915bc
+# keymap   6>> 6d88a37a110b3efddbf98641ca0093fd
+# keymap   7>> 4e54f70e5f5fc9f384a64fb24ea6dc4f
+# keymap   8>> ead27321b58dbad2312bf5607f8d292f
+# keymap   9>> ac7766f319fadc2128d12941575c006e
+# keymap  10>> d014f9a8c9ee2589e13f0cc8b6630ca6
+# Break in Task key_expansion_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 52
+run -continue
+# Break in Module aes_core at C:/Workspace_Verilog/aes_hv/aes_core.v line 207
+run -continue
+# Break in NamedBeginStat aes_core_test at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 107
+run -continue
+# INV_SUBBYTE: eb40f21e592e38848ba113e71bc342d2
+# INV_SUBBYTE: c2df679b10317974a5da424054c05dfa
+# INV_SUBBYTE: 229081629629a30be49028c357a63c0d
+# INV_SUBBYTE: 0ee34279993470db00a5911e3ec497d6
+# INV_SUBBYTE: ea835cf00445332d655d98ad8596b0c5
+# INV_SUBBYTE: 0c773143b7b80ab03ba01970adc3d8eb
+# INV_SUBBYTE: 3007037ee83397f8623450f32adfafce
+# INV_SUBBYTE: 191efba5ca71f740046aaf772e92f735
+# INV_SUBBYTE: 5a4142b11949dc1fa3e019657a8c040c
+# INV_SUBBYTE: 96716ae4e98791c7e96104903c8913ff
+# INV_SUBBYTE: d8b9fe3d9cf18cf2db90cec2022b1305
+# INV_SUBBYTE: 10a6b4bd545f2b1496aa0dc32c9c62e0
+# INV_SUBBYTE: 260e2e173d41b77de86472a9fdd28b25
+# INV_SUBBYTE: 3a853a1d53eb7a4f495d105d3255384c
+# INV_SUBBYTE: ed588e45659b798e8322d4c2cdcaf9d4
+# INV_SUBBYTE: 4d017b3cbbe9d6a50b7c98039a7bcbb0
+# INV_SUBBYTE: f1006f55c1924cef7cc88b325db5d50c
+# INV_SUBBYTE: 36021a2d318afcf50794e2f5358be416
+# INV_SUBBYTE: c71ab24ad88851f1f9e66198fe8deb1b
+# INV_SUBBYTE: 080804526cbeeaf3c370c5bd7e2d69fb
+# INV_SUBBYTE: e0927fe8c86363c0d9b1355085b8be01
+# INV_SUBBYTE: e8168e94aa2457eb2a26b567e718c372
+# INV_SUBBYTE: 517453e8b0f43a376f27cf9cd7362914
+# INV_SUBBYTE: dc4072c7977c62c2dda9f6911a504bdb
+# INV_SUBBYTE: 486c4eee671d9d0d4de3b138d65f58e7
+# INV_SUBBYTE: f9c7c459cbd7d219e9bbe1dd91517f88
+# INV_SUBBYTE: 91c328d133d602a2e22ad09dc5fd734a
+# INV_SUBBYTE: e8aeb2f2fd55c854520b4b2e37c9003e
+# INV_SUBBYTE: aa8f5f0361dde3ef82d24ad26832469a
+# INV_SUBBYTE: dddba66ea0a72865df77ecc46adf2702
+# INV_SUBBYTE: cbd0533925c9155247214f0d575f3058
+# INV_SUBBYTE: 8df6f0731b19678041268c6d6e691eb8
+# INV_SUBBYTE: a49c7ff2689f352b6b5bea43026a5049
+# INV_SUBBYTE: d715178262484ed22478498891bc150c
+# INV_SUBBYTE: 4be2e2f01c2a490a247152a68603d7d0
+# INV_SUBBYTE: 7bc1147598198df2ec428aceaa1830a6
+# INV_SUBBYTE: 193de3bea0f4e22b9ac68d2ae9f84808
+# INV_SUBBYTE: 85539f4136ad7e3a35407a244c60c16d
+# INV_SUBBYTE: 1bb609508bf236b74e0cd49113c51dd3
+# INV_SUBBYTE: dde13153f7e149b106dc54f3efa3782c
+# Break in Module tb_aes_core at C:/Workspace_Verilog/aes_hv/tb_aes_core.v line 127

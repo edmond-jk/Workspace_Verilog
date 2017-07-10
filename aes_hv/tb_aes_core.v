@@ -36,49 +36,94 @@ module tb_aes_core();
   		#(CLK_HALF_PERIOD);
   		tb_clk = !tb_clk;
   	end  
-  	
-  	initial 
+
+  task key_expansion_test (input [127:0] key);
   	begin
-  		tb_clk = 0;
-  		tb_reset_key = 1;
-  		tb_reset_enc = 0;
-  		tb_reset_dec = 0;
-  	
-  		//tb_key = 128'h00000000_00000000_00000000_00000000;	
-  		//tb_key = 128'h2b7e1516_28aed2a6_abf71588_09cf4f3c;
-  		tb_key = 128'h00010203_04050607_08090a0b_0c0d0e0f;
+  		tb_reset_key = 1'b1;
+  		tb_key = key;
   		#(CLK_PERIOD);
-  		tb_reset_key = 0;
+  		tb_reset_key = 1'b0;
   		
   		while (!tb_ready_key)
   			begin
   				#(CLK_PERIOD);
   			end
-  		
-  		//tb_block_enc = 128'h3243f6a8_885a308d_313198a2_e0370734;
-  		tb_block_enc = 128'h00112233_44556677_8899aabb_ccddeeff;
-  		tb_reset_enc = 1'b1;
-  		#(CLK_PERIOD);
-  		tb_reset_enc = 1'b0;
-  		#(CLK_PERIOD);
-  		tb_reset_enc = 1'b1;
-  		tb_block_enc = 128'h3243f6a8_885a308d_313198a2_e0370734;
-  		#(CLK_PERIOD);
-  		tb_reset_enc = 1'b0;
-  		
-  		while (!tb_oready_enc)
-  			begin
-  				#(CLK_PERIOD);
-  			end
-  		tb_encrypted_data = tb_result_enc;
-  		
-  		tb_block_dec = tb_encrypted_data;
-  		tb_reset_dec = 1'b1;
-  		#(CLK_PERIOD);
-  		tb_reset_dec = 1'b0;
-  		while (!tb_oready_dec)
-  			begin
-  				#(CLK_PERIOD);
-  			end
   	end
+  endtask
+  	
+  initial 
+  begin: aes_core_test
+  // key value 
+  	reg [127:0] 	nist_aes128_key;
+  	reg [127:0]		nist_plaintext [0:3];
+  	reg [127:0]		nist_enc_expected [0:3];
+  	reg [127:0]		nist_encrypted [0:3];
+  	reg [127:0]		nist_decrypted [0:3];
+  	reg [3:0]		i;
+  	
+  	nist_aes128_key = 128'h2b7e1516_28aed2a6_abf71588_09cf4f3c;
+   
+  	nist_plaintext [0] = 128'h3243f6a8_885a308d_313198a2_e0370734; 	
+   	nist_plaintext [1] = 128'hae2d8a57_1e03ac9c_9eb76fac_45af8e51;
+    nist_plaintext [2] = 128'h30c81c46_a35ce411_e5fbc119_1a0a52ef;
+    nist_plaintext [3] = 128'hf69f2445_df4f9b17_ad2b417b_e66c3710;	
+  
+  	nist_enc_expected [0] = 128'h3925841d_02dc09fb_dc118597_196a0b32;
+    nist_enc_expected [1] = 128'hf5d3d585_03b9699d_e785895a_96fdbaaf;
+    nist_enc_expected [2] = 128'h43b1cd7f_598ece23_881b00e3_ed030688;
+    nist_enc_expected [3] = 128'h7b0c785e_27e8ad3f_82232071_04725dd4;
+  	
+  	tb_clk = 0; 
+  	tb_reset_enc = 0; 
+  	tb_reset_dec = 0;
+  	
+  	key_expansion_test(nist_aes128_key);
+  	
+  	tb_reset_enc = 1'b1;
+  	tb_block_enc = nist_plaintext [0]; 
+  	#(CLK_PERIOD); 
+  	tb_block_enc = nist_plaintext [1]; 
+  	#(CLK_PERIOD);
+  	tb_block_enc = nist_plaintext [2]; 
+  	#(CLK_PERIOD);
+  	tb_block_enc = nist_plaintext [3]; 
+  	#(CLK_PERIOD);
+  	tb_reset_enc = 1'b0;
+  		
+  	while (!tb_oready_enc)
+  		begin
+  			#(CLK_PERIOD);
+  		end
+  	
+  	i = 0;
+  	
+  	while (tb_oready_enc)
+  		begin
+  			nist_encrypted[i] = tb_result_enc;
+  			i = i + 1;
+  			#(CLK_PERIOD);
+  		end
+  		
+  	tb_reset_dec = 1'b1;
+  	tb_block_dec = nist_encrypted[0];
+  	#(CLK_PERIOD);
+  	tb_block_dec = nist_encrypted[1];
+  	#(CLK_PERIOD);
+  	tb_block_dec = nist_encrypted[2];
+  	#(CLK_PERIOD);
+  	tb_block_dec = nist_encrypted[3];
+  	#(CLK_PERIOD);
+  	tb_reset_dec = 1'b0;
+  	
+  	while (!tb_oready_dec)
+  		begin
+  			#(CLK_PERIOD);
+  		end
+  	
+  	while (tb_oready_dec)
+  		begin
+  			#(CLK_PERIOD);
+  		end
+  	end
+  	
 endmodule

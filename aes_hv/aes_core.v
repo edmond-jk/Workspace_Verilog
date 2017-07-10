@@ -178,10 +178,10 @@ module aes_core (
   for (i = 1; i < N_aesblock; i = i + 1)
  	begin
  		assign in_dblk_enc[i+1] = out_dblk_enc[i];
- 		assign reset_encipher[i+1] = (ready_encipher[i+1]) ? octrl_enc[i] : 0;
+ 		assign reset_encipher[i+1] = octrl_enc[i];
  		
  		assign in_dblk_dec[i+1] = out_dblk_dec[i];
- 		assign reset_decipher[i+1] = (ready_decipher[i+1]) ? octrl_dec[i] : 0;
+ 		assign reset_decipher[i+1] = octrl_dec[i];
  	end 
  	
   assign in_dblk_enc[1] = tmp_out_dblk_enc;

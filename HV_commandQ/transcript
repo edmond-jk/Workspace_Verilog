@@ -1,0 +1,72 @@
+# Reading C:/intelFPGA_lite/17.0/modelsim_ase/tcl/vsim/pref.tcl
+# vsim -gui -modelsimini C:/Users/JK/AppData/Local/Temp/SigasiCompileCache2974997031020221612/HV_commandQ/mentor/modelsim.ini work.tb_hv_commandQ 
+# Start time: 16:44:11 on Jul 10,2017
+# Loading work.tb_hv_commandQ
+# Loading work.hv_commandQ
+add wave -position insertpoint  \
+sim:/tb_hv_commandQ/tb_clk \
+sim:/tb_hv_commandQ/tb_reset \
+sim:/tb_hv_commandQ/tb_cmd_in \
+sim:/tb_hv_commandQ/tb_cmd_ie \
+sim:/tb_hv_commandQ/tb_cmd_request \
+sim:/tb_hv_commandQ/tb_cmd_oe \
+sim:/tb_hv_commandQ/tb_cq_cin_ready \
+sim:/tb_hv_commandQ/tb_cq_cout_ready \
+sim:/tb_hv_commandQ/tb_cmd_out \
+sim:/tb_hv_commandQ/tb_op_index \
+sim:/tb_hv_commandQ/tb_cmd_op_status \
+sim:/tb_hv_commandQ/tb_tbm_ie \
+sim:/tb_hv_commandQ/tb_tbm_index \
+sim:/tb_hv_commandQ/tb_tbm_address \
+sim:/tb_hv_commandQ/tb_query_ie \
+sim:/tb_hv_commandQ/tb_query_tag \
+sim:/tb_hv_commandQ/tb_query_oe \
+sim:/tb_hv_commandQ/tb_query_out \
+sim:/tb_hv_commandQ/tb_track_tag \
+sim:/tb_hv_commandQ/tb_cdb \
+sim:/tb_hv_commandQ/op_cdb
+run -all
+# cin_pos:   0: 0000000000000040
+# cin_pos:  64: 0000000000000000
+# cin_pos: 128: 0000000000000040
+# cin_pos: 192: 0000000000000000
+# cin_pos:   0: 0000000000000140
+# cin_pos:  64: 0000000000000000
+# cin_pos: 128: 0000000000000140
+# cin_pos: 192: 0000000000000000
+# cin_pos:   0: 0000000000000240
+# cin_pos:  64: 0000000000000000
+# cin_pos: 128: 0000000000000240
+# cin_pos: 192: 0000000000000000
+# CDB (    0): 0000000003000040
+# CDB (   64): 0000000000000000
+# CDB (  128): 0000000000000040
+# CDB (  192): 0000000000000000
+# Break in Module tb_hv_commandQ at C:/Workspace_Verilog/HV_commandQ/tb_hv_commandQ..v line 127
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 193
+step -over
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
+step -over
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 233
+run -continue
+# CDB (    0): 0000000003010140
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 233
+run -continue
+# CDB (   64): 0000000000000000
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 233
+run -continue
+# CDB (  128): 0000000000000140
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 216
+step -over
+# WARNING: No extended dataflow license exists
+# End time: 16:52:10 on Jul 10,2017, Elapsed time: 0:07:59
+# Errors: 0, Warnings: 1
