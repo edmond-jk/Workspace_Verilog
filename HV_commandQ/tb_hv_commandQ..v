@@ -7,6 +7,9 @@ module tb_hv_commandQ ();
   localparam BSM_READ	= 8'h30;
   localparam QUERY		= 8'h70;
   
+  localparam CMD_ST_READ_DONE	= 6;	 
+  localparam CMD_ST_WRITE_DONE 	= 7;
+ 
   reg						tb_clk, tb_reset; 
   reg [CMD_IO_WIDTH-1:0]	tb_cmd_in;	
   reg 						tb_cmd_ie, tb_cmd_request;
@@ -42,8 +45,8 @@ module tb_hv_commandQ ();
   				.query_out(tb_query_out)
   );
   
-  reg [7:0]		tb_track_tag;
-  reg [255:0]	tb_cdb, op_cdb;
+  reg [7:0]		tb_tag_head, tb_tag_tail;
+  reg [255:0]	tb_cdb, op_cdb, query_response;
   
   always 
   	begin 
@@ -61,7 +64,7 @@ module tb_hv_commandQ ();
   			
   		// fill in the required fields 	
   		tb_cdb [7:0]	= op; // write
-  		tb_cdb [15:08] 	= tb_track_tag;
+  		tb_cdb [15:08] 	= tb_tag_head;
   			
   		// calculate checksum	
   		tb_cdb [135:128] = tb_cdb[07:00] ^ tb_cdb[39:32] ^ tb_cdb[71:64] ^ tb_cdb[103:096] ^ tb_cdb[167:160] ^ tb_cdb[199:192] ^ tb_cdb[231:224];
@@ -80,7 +83,7 @@ module tb_hv_commandQ ();
   	#(CLK_PERIOD);
   	tb_cmd_ie = 1'b0;
  	
- 	tb_track_tag 	= tb_track_tag + 1;
+ 	tb_tag_head 	= tb_tag_head + 1;
   	end
   endtask 
   
@@ -107,13 +110,42 @@ module tb_hv_commandQ ();
   				$display ("CDB (%d): %X", j, tb_cmd_out);
   				#(CLK_PERIOD);
   			end
+  			
+  			tb_cmd_op_status 	= CMD_ST_WRITE_DONE;
+  			tb_op_index			= tb_tag_tail;	
+  			tb_tag_tail 		= tb_tag_tail + 1;
   	end 	
+  endtask
+  
+  task query_command();
+  	reg [15:0] k;
+  	begin
+  		tb_query_ie = 1;
+  		tb_query_tag = 0;
+  		#(CLK_PERIOD);
+  		tb_query_ie = 0;
+  		
+  		while (!tb_query_oe)
+  			begin
+  				#(CLK_PERIOD);
+  			end
+  		
+  		for (k = 0; k < 256; k = k + 64)
+  			begin
+  				query_response[k +: 64] = tb_query_out;
+  				$display("QR (%d): %X", k, tb_query_out);
+  				#(CLK_PERIOD);
+  			end
+  	end
   endtask
   
   initial 
     begin 
       tb_clk = 0; 
-      tb_track_tag = 0; 
+      tb_tag_head = 0;
+      tb_tag_tail = 0; 
+      tb_query_ie = 0;
+      
       tb_reset = 1'b1; 
       #(CLK_PERIOD); 
       tb_reset = 1'b0; 
@@ -126,5 +158,7 @@ module tb_hv_commandQ ();
       process_command();
       process_command();
       process_command();
+      
+      query_command();
     end 
 endmodule

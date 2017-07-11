@@ -33,20 +33,24 @@ module hv_commandQ
   /* 
    * the status of a specific command in the command queue
    */
-  parameter CMD_ST_FREE			= 0;	// this CDB (Command Descriptor Block) slot is available for any new command
-  parameter CMD_ST_INSERTED		= 1; 	// this CDB is just inserted/queued into the command queue
-  parameter CMD_ST_CKS_ERROR	= 2;	// this CDB has some errors because its calculated checksum is not equal to the included checksum.
-  parameter CMD_ST_READY		= 3; 	// this CDB is waiting for the call from the command processor. 	
-  parameter CMD_ST_Q2D			= 4;	// this command is fetched by the command processor
-  parameter CMD_ST_X2M			= 5; 	// the data designated by this CDB was transferred to TBM
-  parameter CMD_ST_Q2S			= 6; 	// this command was issued to the back-end (flash) storage  
+  parameter CMD_ST_FREE				= 0;// this CDB (Command Descriptor Block) slot is available for any new command
+  parameter CMD_ST_CKS_ERROR		= 1;// this CDB has some errors because its calculated checksum is not equal to the included checksum.
+  parameter CMD_ST_READY			= 2;// this CDB is waiting for the call from the command processor. 	
+  
+  // TODO CMD_ST_Q2D, X2M, Q2S can be used according to the requirement
+  parameter CMD_ST_Q2P				= 3;// this command is fetched by the command processor
+  parameter CMD_ST_H2M				= 4;// host --> TBM
+  parameter CMD_ST_Q2S				= 5;// to Storage 
+  parameter CMD_ST_READ_DONE		= 6;// storage --> TBM  
   
   // in the case of write, the requested data is written to the back-end storage, 
   // in the case of read, the requested data  is read from the back-end storage to TBM. 
-  parameter CMD_ST_DONE			= 6;	
-  parameter CMD_ST_QUERIED		= 7;
-  parameter CMD_ST_Q2D_ERROR	= 8;	// this command w/ error is queried and have to be recovered afterwards
-  parameter CMD_ST_QUERIED_ERROR = 9;	// in the case of read command  
+  parameter CMD_ST_WRITE_DONE		= 7;	
+  parameter CMD_ST_TX_READY			= 8;
+  
+  parameter CMD_ST_Q2P_ERROR		= 9;	// this command w/ error is queried and have to be recovered afterwards
+  parameter CMD_ST_QUERIED_ERROR 	= 10;	// in the case of read command  
+  parameter	CMD_ST_READY2FREE		= 12;
   /*
    *  DATA WIDTH DEFINITION
    */
@@ -66,7 +70,7 @@ module hv_commandQ
   parameter INIT_OXFER_STATE	= 0;
   parameter OXFER_PROC_STATE	= 1;
   parameter OXFER_WAIT_STATE 	= 2;
-  parameter OXFER_SKIP_STATE	= 3; // skip error
+  parameter OXFER_SKIP_STATE	= 3;
    
   parameter INIT_QUERY_STATE	= 0;
   parameter QUERY_PROC_STATE	= 1;
@@ -123,6 +127,8 @@ module hv_commandQ
   				q_done_pos		<= 0;
   				q_error_cnt		<= 0;
   				q_done_cnt		<= 0;
+  				
+  				query_response	<= 256'h0;
   				
   				checksum_state 	<= INIT_CKS_STATE;
   				oxfer_state		<= INIT_OXFER_STATE;
@@ -189,19 +195,15 @@ module hv_commandQ
   				tmp_cmd_oe <= 0;
   				
   				if (cmd_request && (current != head))  
-  					begin
-  						if (CQ[current][31:24] == CMD_ST_READY)
+  					begin 
+  						if ((CQ[current][31:24] == CMD_ST_READY ) || (CQ[current][31:24] == CMD_ST_CKS_ERROR))
   							begin
   								oxfer_state <= OXFER_PROC_STATE;
   							end
-  						else if (CQ[current][31:24] == CMD_ST_INSERTED)
+  						else
   							begin
-  								oxfer_state <= OXFER_WAIT_STATE;
-  							end
-  						else if (CQ[current][31:24] == CMD_ST_CKS_ERROR) 
-  							// in the case of write command, processor must solve this command by using GWS
-  							begin 
-  								oxfer_state <= OXFER_PROC_STATE;  	
+  								current 	<= current + 1;
+  								oxfer_state <= OXFER_SKIP_STATE;
   							end
   					end
   			end
@@ -217,11 +219,11 @@ module hv_commandQ
   						if (CQ[current][31:24] == CMD_ST_CKS_ERROR)
   							begin
   								// write command
-		  						CQ[current][31:24] <= CMD_ST_Q2D_ERROR;
+		  						CQ[current][31:24] <= CMD_ST_Q2P_ERROR;
   							end
   						else
   							begin
-  								CQ[current][31:24] <= CMD_ST_Q2D;
+  								CQ[current][31:24] <= CMD_ST_Q2P;
   							end
   							
   						current <= current + 1;
@@ -234,16 +236,25 @@ module hv_commandQ
   					end
   			end
   			
-  			OXFER_WAIT_STATE:
+  			OXFER_SKIP_STATE:
   			begin
-  				if (CQ[current][31:24] == CMD_ST_INSERTED)
+  				if (current != head)
   					begin
-  						// wait
+  						if ((CQ[current][31:24] == CMD_ST_READY ) || (CQ[current][31:24] == CMD_ST_CKS_ERROR))
+  							begin
+  								oxfer_state <= OXFER_PROC_STATE;
+  							end
+  						else
+  							begin
+  								current 	<= current + 1;
+  								oxfer_state <= OXFER_SKIP_STATE;
+  							end
   					end
-  				else	// CMD_ST_READY or CMD_ST_CKS_ERROR   					
+  				else
   					begin
-  						oxfer_state <= OXFER_PROC_STATE;
-  					end 
+  						oxfer_state <= INIT_OXFER_STATE;
+  					end
+  				
   			end
   		endcase
   	end
@@ -272,12 +283,11 @@ module hv_commandQ
 				
 				checksum_state 		<= INIT_CKS_STATE;
 			end
-			
   		endcase
   	end
 
   always @ (posedge clk)
-  	begin
+  	begin: update_op_status
   		// when cmd_op_status coming from external, cmd_op_status will not be 0.
   		if (cmd_op_status) 
   			begin
@@ -286,7 +296,7 @@ module hv_commandQ
   	end
   	
   always @ (posedge clk)
-  	begin
+  	begin: update_tbm_address
   		if (tbm_ie)
   			begin
   				CQ[tbm_index] [191:160] <= tbm_address;
@@ -302,7 +312,7 @@ module hv_commandQ
    * [0] 	Command sync. counter
    */
   always @ (posedge clk)
-  	begin
+  	begin: build_query_response
   		case (query_state)
   			INIT_QUERY_STATE:
   			begin
@@ -317,29 +327,43 @@ module hv_commandQ
   			
   			QUERY_PROC_STATE:
   			begin
-  				if (CQ[query_pos][31:24] == CMD_ST_CKS_ERROR)
+  				if (CQ[query_pos][31:24] == CMD_ST_CKS_ERROR || (CQ[query_pos][31:24] == CMD_ST_Q2P_ERROR))
   					begin
   						query_response [(q_error_pos + 160) +: 8] <= CQ[query_pos][15:08];
   						q_error_pos <= q_error_pos + 8;
   						q_error_cnt <= q_error_cnt + 1;
   						
-  						CQ[query_pos][31:24] <= CMD_ST_Q2D_ERROR;
+  						CQ[query_pos][31:24] <= CMD_ST_QUERIED_ERROR;
   						
   						if ((q_error_cnt + 1) == QUERY_BACK_LIMIT)
   							begin
   								query_state <= QUERY_DONE_STATE;
   							end
   					end
-  				else if (CQ[query_pos][31:24] == CMD_ST_DONE)
+  				else if (CQ[query_pos][31:24] == CMD_ST_READ_DONE)
   					begin
   						query_response [(q_done_pos + 32) +: 8] <= CQ[query_pos][15:08];
   						q_done_pos <= q_done_pos + 8;
   						q_done_cnt <= q_done_cnt + 1;
   						
-  						CQ[query_pos] <= CMD_ST_QUERIED;
+  						CQ[query_pos] <= CMD_ST_TX_READY;
   						
   						if ((q_done_cnt + 1) == QUERY_BACK_LIMIT)
   							begin
+  								query_state <= QUERY_DONE_STATE;
+  							end
+  					end
+  				else if (CQ[query_pos][31:24] == CMD_ST_WRITE_DONE)
+  					begin
+  						query_response[(q_done_pos + 32) +: 8] <= CQ[query_pos][15:08];
+  						q_done_pos <= q_done_pos + 8;
+  						q_done_cnt <= q_done_cnt + 1;
+  						
+  						CQ[query_pos][31:24] <= CMD_ST_READY2FREE;
+  						
+  						if ((q_done_cnt + 1) == QUERY_BACK_LIMIT)
+  							begin
+  								query_state <= QUERY_DONE_STATE;
   							end
   					end
   					
@@ -347,13 +371,15 @@ module hv_commandQ
   						begin
   							query_state <= QUERY_DONE_STATE;
   						end 
-  					
-  					query_pos <= query_pos + 1;
+  					else
+  						begin 
+  							query_pos <= query_pos + 1;
+  						end
   			end
   			
   			QUERY_DONE_STATE:
   			begin
-  				query_pos 	<= 0;
+  				query_pos 	<= tail;
   				q_done_pos 	<= 0;
   				q_error_pos <= 0;
   				q_done_cnt	<= 0;
@@ -378,6 +404,14 @@ module hv_commandQ
   					end
   			end
   		endcase	
-  		
   	end
+  	
+  	always @ (posedge clk)
+  		begin
+  			if (CQ[tail][31:24] == CMD_ST_READY2FREE)
+  				begin
+  					CQ[tail][31:24] <= CMD_ST_FREE;
+  					tail <= tail + 1;
+  				end
+  		end
 endmodule

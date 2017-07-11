@@ -1,6 +1,6 @@
 # Reading C:/intelFPGA_lite/17.0/modelsim_ase/tcl/vsim/pref.tcl
 # vsim -gui -modelsimini C:/Users/JK/AppData/Local/Temp/SigasiCompileCache2974997031020221612/HV_commandQ/mentor/modelsim.ini work.tb_hv_commandQ 
-# Start time: 16:44:11 on Jul 10,2017
+# Start time: 16:24:46 on Jul 11,2017
 # Loading work.tb_hv_commandQ
 # Loading work.hv_commandQ
 add wave -position insertpoint  \
@@ -22,9 +22,12 @@ sim:/tb_hv_commandQ/tb_query_ie \
 sim:/tb_hv_commandQ/tb_query_tag \
 sim:/tb_hv_commandQ/tb_query_oe \
 sim:/tb_hv_commandQ/tb_query_out \
-sim:/tb_hv_commandQ/tb_track_tag \
+sim:/tb_hv_commandQ/tb_tag_head \
+sim:/tb_hv_commandQ/tb_tag_tail \
 sim:/tb_hv_commandQ/tb_cdb \
-sim:/tb_hv_commandQ/op_cdb
+sim:/tb_hv_commandQ/op_cdb \
+sim:/tb_hv_commandQ/query_response
+run -continue
 run -all
 # cin_pos:   0: 0000000000000040
 # cin_pos:  64: 0000000000000000
@@ -38,35 +41,83 @@ run -all
 # cin_pos:  64: 0000000000000000
 # cin_pos: 128: 0000000000000240
 # cin_pos: 192: 0000000000000000
-# CDB (    0): 0000000003000040
+# CDB (    0): 0000000002000040
 # CDB (   64): 0000000000000000
 # CDB (  128): 0000000000000040
 # CDB (  192): 0000000000000000
-# Break in Module tb_hv_commandQ at C:/Workspace_Verilog/HV_commandQ/tb_hv_commandQ..v line 127
-run -continue
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 193
-step -over
-run -continue
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
-step -over
-run -continue
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 233
-run -continue
-# CDB (    0): 0000000003010140
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
-run -continue
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 233
-run -continue
+# CDB (    0): 0000000002010140
 # CDB (   64): 0000000000000000
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
-run -continue
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 233
-run -continue
 # CDB (  128): 0000000000000140
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 212
+# CDB (  192): 0000000000000000
+# CDB (    0): 0000000002020240
+# CDB (   64): 0000000000000000
+# CDB (  128): 0000000000000240
+# CDB (  192): 0000000000000000
+# Break in Module tb_hv_commandQ at C:/Workspace_Verilog/HV_commandQ/tb_hv_commandQ..v line 162
 run -continue
-# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 216
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 413
 step -over
-# WARNING: No extended dataflow license exists
-# End time: 16:52:10 on Jul 10,2017, Elapsed time: 0:07:59
-# Errors: 0, Warnings: 1
+step -over
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 413
+run -continue
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 382
+run -continue
+# Break in Module hv_commandQ at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 413
+run -continue
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 393
+run -continue
+# QR (    0): 0002010000000000
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 393
+run -continue
+# QR (   64): 0000000000000000
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 393
+run -continue
+# QR (  128): 0000000000000000
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 393
+step -over
+step -over
+step -over
+run -continue
+# QR (  192): 0000000000000000
+# Break key hit
+# Simulation stop requested.
+restart -f
+run -all
+# cin_pos:   0: 0000000000000040
+# cin_pos:  64: 0000000000000000
+# cin_pos: 128: 0000000000000040
+# cin_pos: 192: 0000000000000000
+# cin_pos:   0: 0000000000000140
+# cin_pos:  64: 0000000000000000
+# cin_pos: 128: 0000000000000140
+# cin_pos: 192: 0000000000000000
+# cin_pos:   0: 0000000000000240
+# cin_pos:  64: 0000000000000000
+# cin_pos: 128: 0000000000000240
+# cin_pos: 192: 0000000000000000
+# CDB (    0): 0000000002000040
+# CDB (   64): 0000000000000000
+# CDB (  128): 0000000000000040
+# CDB (  192): 0000000000000000
+# CDB (    0): 0000000002010140
+# CDB (   64): 0000000000000000
+# CDB (  128): 0000000000000140
+# CDB (  192): 0000000000000000
+# CDB (    0): 0000000002020240
+# CDB (   64): 0000000000000000
+# CDB (  128): 0000000000000240
+# CDB (  192): 0000000000000000
+# Break in Module tb_hv_commandQ at C:/Workspace_Verilog/HV_commandQ/tb_hv_commandQ..v line 162
+run -continue
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 382
+run -continue
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 393
+run -continue
+# QR (    0): 0002010000000000
+# Break in NamedBeginStat build_query_response at C:/Workspace_Verilog/HV_commandQ/hv_commandQ.v line 393
+run -continue
+# QR (   64): 0000000000000000
+# QR (  128): 0000000000000000
+# QR (  192): 0000000000000000
+# Break in Module tb_hv_commandQ at C:/Workspace_Verilog/HV_commandQ/tb_hv_commandQ..v line 163
