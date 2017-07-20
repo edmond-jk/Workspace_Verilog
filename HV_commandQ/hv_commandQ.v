@@ -77,7 +77,7 @@ module hv_commandQ
   parameter QUERY_DONE_STATE	= 2;
   parameter QUERY_OXFER_STATE	= 3;
    
-  parameter QUERY_BACK_LIMIT	= 12;
+  parameter QUERY_BACK_LIMIT	= 12; //**
   
   // head position is used to designate  a position for a new command.
   // tail position is used to designate the oldest command remaining in the command queue.
@@ -100,8 +100,8 @@ module hv_commandQ
   
   assign cmd_oe 		= tmp_cmd_oe;
   assign cmd_out		= tmp_cmd_out;  
-  assign cq_cout_ready	= (current == head) ? 0 : (tmp_cout_ready ? 1 : 0); 	// if (current == head), empty
-  assign cq_cin_ready 	= (tail == head + 1 ) ? 0 : 1; 	// if (tail == head + 1), full
+  assign cq_cout_ready	= (current == head) ? 0 : (tmp_cout_ready ? 1 : 0);// if (current == head), empty
+  assign cq_cin_ready 	= (tail == head + 1 ) ? 0 : 1;// if (tail == head + 1), full
   assign query_oe		= tmp_query_oe;
   assign query_out		= tmp_query_out;
   
@@ -309,7 +309,7 @@ module hv_commandQ
    * [7:4] 	Estimated completion time 
    * [3:2] 	00b: no command, 01b: command in FIFO, 10b: command is being processed by FPGA, 11b: command done
    * [1]	eMMC CRC: This field indicates CRC error from eMMC,
-   * [0] 	Command sync. counter
+   * [0] 	Indicate whether checksum error	occurs or not. 
    */
   always @ (posedge clk)
   	begin: build_query_response
@@ -317,28 +317,33 @@ module hv_commandQ
   			INIT_QUERY_STATE:
   			begin
   				tmp_query_oe	<= 0;
+		  		query_pos 		<= tail; 
+		  		q_done_pos 		<= 0; 
+		  		q_error_pos 	<= 0; 
+		  		q_done_cnt		<= 0;
+		  		q_error_cnt		<= 0;
   		
-  				if (query_ie)
-  					begin
-  						query_response [15:8] <= query_tag;
-  						query_state <= QUERY_PROC_STATE;
-  					end
+  				query_state 	<= QUERY_PROC_STATE;
   			end
   			
   			QUERY_PROC_STATE:
   			begin
-  				if (CQ[query_pos][31:24] == CMD_ST_CKS_ERROR || (CQ[query_pos][31:24] == CMD_ST_Q2P_ERROR))
+  				if (query_ie)
   					begin
-  						query_response [(q_error_pos + 160) +: 8] <= CQ[query_pos][15:08];
-  						q_error_pos <= q_error_pos + 8;
-  						q_error_cnt <= q_error_cnt + 1;
+  						query_response [15:8] 	<= query_tag;
+  						query_response [31:24] 	<= q_done_cnt; 
+  						
+  						query_state <= QUERY_OXFER_STATE;
+  					end
+  				else if (CQ[query_pos][31:24] == CMD_ST_CKS_ERROR || (CQ[query_pos][31:24] == CMD_ST_Q2P_ERROR))
+  					begin
+  						query_response [0:0] 	<= 1'b1;
+  						query_response [23:16]	<= CQ[query_pos][15:08];
   						
   						CQ[query_pos][31:24] <= CMD_ST_QUERIED_ERROR;
   						
-  						if ((q_error_cnt + 1) == QUERY_BACK_LIMIT)
-  							begin
-  								query_state <= QUERY_DONE_STATE;
-  							end
+  						query_state <= QUERY_DONE_STATE;
+  								
   					end
   				else if (CQ[query_pos][31:24] == CMD_ST_READ_DONE)
   					begin
@@ -351,6 +356,17 @@ module hv_commandQ
   						if ((q_done_cnt + 1) == QUERY_BACK_LIMIT)
   							begin
   								query_state <= QUERY_DONE_STATE;
+  							end
+  						else
+  							begin 
+  								if ((query_pos + 1)	== head) 
+  									begin 
+  										query_state <= QUERY_DONE_STATE;
+  									end 
+  								else 
+  									begin 
+  										query_pos <= query_pos + 1; 
+  									end 
   							end
   					end
   				else if (CQ[query_pos][31:24] == CMD_ST_WRITE_DONE)
@@ -365,27 +381,31 @@ module hv_commandQ
   							begin
   								query_state <= QUERY_DONE_STATE;
   							end
+  						else
+  							begin 
+  								if ((query_pos + 1)	== head) 
+  									begin 
+  										query_state <= QUERY_DONE_STATE;
+  									end 
+  								else 
+  									begin 
+  										query_pos <= query_pos + 1; 
+  									end 
+  							end
   					end
-  					
-  					if ((query_pos + 1)	== head)
-  						begin
-  							query_state <= QUERY_DONE_STATE;
-  						end 
-  					else
-  						begin 
-  							query_pos <= query_pos + 1;
-  						end
   			end
   			
   			QUERY_DONE_STATE:
-  			begin
-  				query_pos 	<= tail;
-  				q_done_pos 	<= 0;
-  				q_error_pos <= 0;
-  				q_done_cnt	<= 0;
-  				q_error_cnt	<= 0;
-  				
-  				query_state	<= QUERY_OXFER_STATE;
+  			begin 
+  				if (query_ie)
+  					begin
+  						query_response [15:8] 	<= query_tag;
+						query_response [31:24] 	<= q_done_cnt; 
+		  				
+		  				query_state	<= QUERY_OXFER_STATE;
+		  			end 
+		  		
+		  		
   			end
   			
   			QUERY_OXFER_STATE:
@@ -408,7 +428,7 @@ module hv_commandQ
   	
   	always @ (posedge clk)
   		begin
-  			if (CQ[tail][31:24] == CMD_ST_READY2FREE)
+  			if ((CQ[tail][31:24] == CMD_ST_READY2FREE) || (CQ[tail][31:24] == CMD_ST_QUERIED_ERROR))
   				begin
   					CQ[tail][31:24] <= CMD_ST_FREE;
   					tail <= tail + 1;

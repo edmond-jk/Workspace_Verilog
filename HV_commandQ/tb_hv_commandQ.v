@@ -9,6 +9,7 @@ module tb_hv_commandQ ();
   
   localparam CMD_ST_READ_DONE	= 6;	 
   localparam CMD_ST_WRITE_DONE 	= 7;
+  localparam CMD_ST_READY2FREE 	= 12; 
  
   reg						tb_clk, tb_reset; 
   reg [CMD_IO_WIDTH-1:0]	tb_cmd_in;	
@@ -54,7 +55,7 @@ module tb_hv_commandQ ();
   		tb_clk = !tb_clk;
   	end
   	
-  task cdb_build_n_transfer (input reg [7:0] op);
+  task build_n_transfer_cdb (input reg [7:0] op);
   	reg [15:0] i; 
   	begin
   		for (i = 0; i < 256; i = i + 32)
@@ -139,6 +140,15 @@ module tb_hv_commandQ ();
   	end
   endtask
   
+  task update_command_status(input reg [7:0] status, input reg [7:0] cmd_index);
+  	begin
+  			tb_cmd_op_status 	= status;
+  			tb_op_index			= cmd_index;
+  			#(CLK_PERIOD);	
+  	end
+  endtask
+  
+  
   initial 
     begin 
       tb_clk = 0; 
@@ -151,14 +161,19 @@ module tb_hv_commandQ ();
       tb_reset = 1'b0; 
       #(CLK_PERIOD);	
    
-      cdb_build_n_transfer(BSM_WRITE); 
-      cdb_build_n_transfer(BSM_WRITE); 
-      cdb_build_n_transfer(BSM_WRITE);
+      build_n_transfer_cdb(BSM_WRITE); 
+      build_n_transfer_cdb(BSM_WRITE); 
+      build_n_transfer_cdb(BSM_WRITE); 
     
       process_command();
       process_command();
       process_command();
       
       query_command();
+      // In the case of write command, after processing query command, command queue will release the command.
+      // In the case of read command, after processing query command, the command's status is "TX_READY". Hence
+      // command processing module transfers data from TBM to host and then have to update the status of the command 
+      // "READY2FREE". 
+      // update_command_status ( READY2FREE, xxx);
     end 
 endmodule
